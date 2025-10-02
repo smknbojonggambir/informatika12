@@ -1,526 +1,441 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ujian Informatika - Soal Per Soal</title>
-    <style>
-        /* Global Reset and Modern Base */
-        :root {
-            --primary-color: #3f51b5; /* Indigo */
-            --accent-color: #ff9800; /* Amber */
-            --bg-light: #f4f6f8;
-            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --radius: 8px;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ujian Informatika - Soal Per Soal</title>
+    <style>
+        /* Global Reset and Modern Base */
+        :root {
+            --primary-color: #3f51b5; /* Indigo */
+            --accent-color: #ff9800; /* Amber */
+            --bg-light: #f4f6f8;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 8px;
+        }
 
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            display: flex; 
-            justify-content: center; 
-            align-items: flex-start; /* Ubah ke flex-start agar konten dimulai dari atas di desktop */
-            min-height: 100vh; 
-            background-color: var(--bg-light); 
-            margin: 0;
-            padding: 30px 20px;
-        }
-        
-        /* Container modern look */
-        .container { 
-            background-color: #ffffff; 
-            padding: 30px; 
-            border-radius: var(--radius); 
-            box-shadow: var(--card-shadow); 
-            width: 100%; 
-            max-width: 750px; /* Lebar lebih nyaman */
-            box-sizing: border-box;
-            animation: fadeIn 0.8s ease-out;
-        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start; 
+            min-height: 100vh; 
+            background-color: var(--bg-light); 
+            margin: 0;
+            padding: 30px 20px;
+        }
+        
+        /* Container modern look */
+        .container { 
+            background-color: #ffffff; 
+            padding: 30px; 
+            border-radius: var(--radius); 
+            box-shadow: var(--card-shadow); 
+            width: 100%; 
+            max-width: 750px; 
+            box-sizing: border-box;
+            animation: fadeIn 0.8s ease-out;
+        }
 
-        /* Header Styling */
-        .header { 
-            text-align: center; 
-            margin-bottom: 30px; 
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        .header h2 {
-            color: var(--primary-color); 
-            margin-bottom: 5px;
-            font-size: 1.8em;
-        }
-        #status {
-            font-size: 1em;
-            color: #607d8b;
-            font-weight: 500;
-        }
+        /* Header Styling */
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .header h2 {
+            color: var(--primary-color); 
+            margin-bottom: 5px;
+            font-size: 1.8em;
+        }
+        #status {
+            font-size: 1em;
+            color: #607d8b;
+            font-weight: 500;
+        }
 
-        /* Question Area */
-        .question-area h4 {
-            color: #37474f; 
-            margin-top: 0;
-            margin-bottom: 25px;
-            line-height: 1.6; /* Lebih mudah dibaca */
-            font-size: 1.2em;
-        }
+        /* Question Area */
+        .question-area h4 {
+            color: #37474f; 
+            margin-top: 0;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            font-size: 1.2em;
+        }
 
-        /* Options (Pilihan Ganda) Card Style - DITINGKATKAN */
-        .options label { 
-            display: flex;
-            align-items: center;
-            margin: 12px 0; 
-            padding: 18px 15px; /* Padding lebih besar */
-            border: 2px solid #e3e8ed; /* Border lebih tebal */
-            border-radius: var(--radius); 
-            cursor: pointer; 
-            transition: all 0.3s ease;
-            background-color: #ffffff;
-            font-size: 1.05em;
-            line-height: 1.4;
-        }
-        .options label:hover { 
-            background-color: #f5f5f5; 
-            border-color: #c5cae9; /* Light primary color */
-        }
-        .options input[type="radio"] { 
-            position: absolute; 
-            opacity: 0; 
-            pointer-events: none;
-        }
-        /* Tampilan Radio Saat Terpilih */
-        .options input[type="radio"]:checked + span::before {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px #ffffff, 0 0 0 5px var(--primary-color);
-        }
-        .options input[type="radio"]:checked + span { 
-            font-weight: 600; 
-            color: var(--primary-color);
-        }
+        /* Options */
+        .options label { 
+            display: flex;
+            align-items: center;
+            margin: 12px 0; 
+            padding: 18px 15px;
+            border: 2px solid #e3e8ed; 
+            border-radius: var(--radius); 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+            background-color: #ffffff;
+            font-size: 1.05em;
+            line-height: 1.4;
+        }
+        .options label:hover { 
+            background-color: #f5f5f5; 
+            border-color: #c5cae9;
+        }
+        .options input[type="radio"] { 
+            position: absolute; 
+            opacity: 0; 
+            pointer-events: none;
+        }
+        .options input[type="radio"]:checked + span::before {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px #ffffff, 0 0 0 5px var(--primary-color);
+        }
+        .options input[type="radio"]:checked + span { 
+            font-weight: 600; 
+            color: var(--primary-color);
+        }
+        .options input[type="radio"] + span::before {
+            content: '';
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #90a4ae;
+            margin-right: 15px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
 
-        /* Highlight Box Ketika Label Terpilih */
-        .options input[type="radio"]:checked ~ label {
-            border-color: var(--primary-color);
-            background-color: #e8eaf6; /* Very light background for selected */
-        }
+        /* Input & Textarea */
+        input[type="text"], select, #essay-answer {
+            width: 100%; 
+            padding: 14px;
+            margin-bottom: 20px;
+            border: 1px solid #bdc3c7; 
+            border-radius: var(--radius);
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input[type="text"]:focus, select:focus, #essay-answer:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+            outline: none;
+        }
+        #essay-answer { 
+            height: 150px;
+            resize: vertical; 
+        }
 
-        /* Custom radio button appearance */
-        .options input[type="radio"] + span::before {
-            content: '';
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            border: 2px solid #90a4ae;
-            margin-right: 15px;
-            flex-shrink: 0;
-            transition: all 0.2s ease;
-        }
-        
-        /* Input/Textarea Styling (Data Diri & Esai) - DITINGKATKAN */
-        input[type="text"], select, #essay-answer {
-            width: 100%; 
-            padding: 14px; /* Padding lebih besar */
-            margin-bottom: 20px;
-            border: 1px solid #bdc3c7; 
-            border-radius: var(--radius);
-            box-sizing: border-box;
-            font-size: 1em;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        input[type="text"]:focus, select:focus, #essay-answer:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
-            outline: none;
-        }
+        /* Navigation and Buttons */
+        .navigation { 
+            display: flex; 
+            justify-content: flex-end; 
+            margin-top: 30px; 
+        }
+        .btn { 
+            padding: 14px 35px;
+            background-color: var(--primary-color); 
+            color: white; 
+            border: none; 
+            border-radius: var(--radius); 
+            cursor: pointer; 
+            transition: background-color 0.3s, transform 0.1s; 
+            font-size: 1.1em;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn:hover:not(:disabled) { 
+            background-color: #303f9f; 
+            transform: translateY(-1px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        .btn:disabled { 
+            background-color: #b0bec5; 
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
 
-        #essay-answer { 
-            height: 150px; /* Tinggi lebih besar untuk esai */
-            resize: vertical; 
-        }
+        /* Timer & Error */
+        #timer-message { 
+            text-align: center; 
+            margin-top: 20px; 
+            font-size: 1.2em; 
+            color: #b71c1c;
+            padding: 12px;
+            border-radius: var(--radius);
+            background-color: #ffcdd2;
+            border: 1px solid #ef9a9a;
+            font-weight: 700;
+            animation: pulse 1s infinite alternate;
+        }
+        .required-error { 
+            color: #d32f2f; 
+            margin-bottom: 20px; 
+            font-weight: bold; 
+            display: none; 
+            text-align: center;
+            padding: 10px;
+            border: 1px dashed #d32f2f;
+            border-radius: 4px;
+        }
 
-        /* Navigation and Buttons */
-        .navigation { 
-            display: flex; 
-            justify-content: flex-end; 
-            margin-top: 30px; 
-        }
-        .btn { 
-            padding: 14px 35px; /* Padding tombol lebih nyaman */
-            background-color: var(--primary-color); 
-            color: white; 
-            border: none; 
-            border-radius: var(--radius); 
-            cursor: pointer; 
-            transition: background-color 0.3s, transform 0.1s; 
-            font-size: 1.1em;
-            font-weight: 600;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .btn:hover:not(:disabled) { 
-            background-color: #303f9f; 
-            transform: translateY(-1px); /* Efek hover 3D ringan */
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
-        .btn:disabled { 
-            background-color: #b0bec5; 
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            from { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.4); }
+            to { box-shadow: 0 0 0 8px rgba(244, 67, 54, 0); }
+        }
 
-        /* Timer/Error Messages - DITINGKATKAN */
-        #timer-message { 
-            text-align: center; 
-            margin-top: 20px; 
-            font-size: 1.2em; 
-            color: #b71c1c; /* Lebih gelap */
-            padding: 12px;
-            border-radius: var(--radius);
-            background-color: #ffcdd2;
-            border: 1px solid #ef9a9a;
-            font-weight: 700;
-            animation: pulse 1s infinite alternate;
-        }
-        .required-error { 
-            color: #d32f2f; 
-            margin-bottom: 20px; 
-            font-weight: bold; 
-            display: none; 
-            text-align: center;
-            padding: 10px;
-            border: 1px dashed #d32f2f;
-            border-radius: 4px;
-        }
+        /* Tablet */
+        @media (max-width: 768px) {
+            body { 
+                padding: 0; 
+                align-items: flex-start;
+            }
+            .container { 
+                padding: 20px 15px; 
+                box-shadow: none; 
+                border-radius: 0; 
+                min-height: 100vh;
+            }
+            .btn { 
+                width: 100%; 
+                padding: 15px; 
+            } 
+            .navigation { 
+                justify-content: center; 
+            }
+            .options label {
+                padding: 15px 12px;
+            }
+        }
 
-        /* Animation Keyframes */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulse {
-            from { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.4); }
-            to { box-shadow: 0 0 0 8px rgba(244, 67, 54, 0); }
-        }
-
-        /* Media Query untuk Responsivitas */
-        @media (max-width: 768px) {
-            body { 
-                padding: 0; /* Hapus padding body agar container menempel */
-                align-items: flex-start;
-            }
-            .container { 
-                padding: 20px 15px; 
-                box-shadow: none; 
-                border-radius: 0; 
-                min-height: 100vh; /* Agar mengisi seluruh layar */
-            }
-            .btn { 
-                width: 100%; 
-                padding: 15px; 
-            } 
-            .navigation { 
-                justify-content: center; 
-            }
-            .options label {
-                padding: 15px 12px;
-            }
-        }
-    </style>
+        /* HP kecil */
+        @media (max-width: 480px) {
+            .header h2 {
+                font-size: 1.4em;
+            }
+            .question-area h4 {
+                font-size: 1em; 
+            }
+            .options label {
+                font-size: 0.95em;
+                padding: 12px 10px;
+            }
+            input[type="text"], select, #essay-answer {
+                font-size: 0.95em;
+                padding: 12px;
+            }
+            .btn {
+                font-size: 1em;
+                padding: 12px;
+            }
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <h2>Ujian Informatika - Bab 1 & 2</h2>
-        <div id="status"></div>
-    </div>
+    <div class="header">
+        <h2>Ujian Informatika - Bab 1 & 2</h2>
+        <div id="status"></div>
+    </div>
 
-    <div class="question-area" id="quiz-content">
-            </div>
+    <div class="question-area" id="quiz-content"></div>
 
-    <div id="timer-message"></div>
+    <div id="timer-message"></div>
 
-    <div class="navigation" id="quiz-navigation">
-        <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Mulai Ujian / Soal Berikutnya</button>
-    </div>
+    <div class="navigation" id="quiz-navigation">
+        <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Mulai Ujian / Soal Berikutnya</button>
+    </div>
 </div>
 
 <script>
-    // ⚠️ URL Web App yang sudah Anda sediakan
-    const GOOGLE_SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwfwmvtrNJtqbVBDKo7a6jWI8QYSQCnSVltyoiKI7Ds9tQXur0fkwJMdO23XWlg5vF2Jg/exec'; 
-    
-    // --- Jeda Waktu Per Soal (10 detik) ---
-    const JEDA_WAKTU = 10; 
+    const GOOGLE_SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwfwmvtrNJtqbVBDKo7a6jWI8QYSQCnSVltyoiKI7Ds9tQXur0fkwJMdO23XWlg5vF2Jg/exec'; 
+    const JEDA_WAKTU = 10; 
 
-    // --- Database Soal ---
-    const questions = [
-        // SOAL BAB 1 (Pilihan Ganda)
-        { 
-            type: 'mc', 
-            text: 'Metode pengujian reliabilitas data dalam rangka memperoleh data yang valid merupakan fase untuk . . . .', 
-            options: ['meningkatkan akurasi data', 'mengurangi sampel penelitian', 'menjamin data bebas dari bias', 'membandingkan data dengan teori', 'menentukan konsistensi pengukuran'],
-            answer: 4, // E
-            score: 5
-        },
-        {
-            type: 'mc',
-            text: 'Terkait potensi bias seleksi dalam analisis data, strategi yang tepat untuk memastikan sampel penelitian mewakili populasi adalah . . . .',
-            options: ['memilih subjek secara acak', 'memilih subjek yang paling aktif secara sosial', 'menggunakan subjek yang paling mudah diakses', 'memilih subjek berdasarkan ketersediaan mereka', 'memfokuskan pada subjek dengan karakteristik yang paling ekstrem'],
-            answer: 0, // A
-            score: 5
-        },
-        {
-            type: 'mc',
-            text: 'Ketika menggunakan bahasa pemrograman R, metode yang tepat untuk mendeteksi outliers dalam dataset adalah . . . .',
-            options: ['mengabaikan semua data yang tidak sesuai dengan ekspektasi', 'menggunakan mean sebagai satu-satunya metode analisis', 'menggunakan interquartile range', 'mengumpulkan lebih banyak data', 'menganalisis variansi data'],
-            answer: 2, // C
-            score: 5
-        },
-        // SOAL BAB 2 (Pilihan Ganda)
-        {
-            type: 'mc',
-            text: 'Saat menjalankan compiler Java dengan perintah command prompt, muncul pesan bahwa Java tidak dikenal. Tindakan yang harus dilakukan untuk mengatasi permasalahan tersebut adalah....',
-            options: ['menginstal ulang JDK', 'men-disable antivirus di Windows', 'menginstal web server di Windows', 'memperbaiki path environment', 'menginstal Java di Windows'],
-            answer: 3, // D
-            score: 5
-        },
-        {
-            type: 'mc',
-            text: 'Operator penugasan yang digunakan untuk membandingkan apakah dua data memiliki nilai yang sama adalah....',
-            options: ['<', '!=', '>', '==', '!'],
-            answer: 3, // D
-            score: 5
-        },
-        // SOAL ESAY
-        {
-            type: 'essay',
-            text: 'Jelaskan peran validitas eksternal dalam generalisasi data hasil penelitian.',
-            score: 10 // Poin untuk esai (penilaian manual)
-        }
-    ];
+    const questions = [
+        { type: 'mc', text: 'Metode pengujian reliabilitas data dalam rangka memperoleh data yang valid merupakan fase untuk . . . .', options: ['meningkatkan akurasi data', 'mengurangi sampel penelitian', 'menjamin data bebas dari bias', 'membandingkan data dengan teori', 'menentukan konsistensi pengukuran'], answer: 4, score: 5 },
+        { type: 'mc', text: 'Terkait potensi bias seleksi dalam analisis data, strategi yang tepat untuk memastikan sampel penelitian mewakili populasi adalah . . . .', options: ['memilih subjek secara acak', 'memilih subjek yang paling aktif secara sosial', 'menggunakan subjek yang paling mudah diakses', 'memilih subjek berdasarkan ketersediaan mereka', 'memfokuskan pada subjek dengan karakteristik yang paling ekstrem'], answer: 0, score: 5 },
+        { type: 'mc', text: 'Ketika menggunakan bahasa pemrograman R, metode yang tepat untuk mendeteksi outliers dalam dataset adalah . . . .', options: ['mengabaikan semua data yang tidak sesuai dengan ekspektasi', 'menggunakan mean sebagai satu-satunya metode analisis', 'menggunakan interquartile range', 'mengumpulkan lebih banyak data', 'menganalisis variansi data'], answer: 2, score: 5 },
+        { type: 'mc', text: 'Saat menjalankan compiler Java dengan perintah command prompt, muncul pesan bahwa Java tidak dikenal. Tindakan yang harus dilakukan untuk mengatasi permasalahan tersebut adalah....', options: ['menginstal ulang JDK', 'men-disable antivirus di Windows', 'menginstal web server di Windows', 'memperbaiki path environment', 'menginstal Java di Windows'], answer: 3, score: 5 },
+        { type: 'mc', text: 'Operator penugasan yang digunakan untuk membandingkan apakah dua data memiliki nilai yang sama adalah....', options: ['<', '!=', '>', '==', '!'], answer: 3, score: 5 },
+        { type: 'essay', text: 'Jelaskan peran validitas eksternal dalam generalisasi data hasil penelitian.', score: 10 }
+    ];
 
-    // --- Variabel Status Ujian ---
-    let currentQuestionIndex = -1; 
-    let studentData = {
-        name: '',
-        class: '',
-        answers: [],
-        totalScore: 0,
-        passingScore: 0
-    };
-    let timerInterval;
+    let currentQuestionIndex = -1; 
+    let studentData = { name: '', class: '', answers: [], totalScore: 0, passingScore: 0 };
+    let timerInterval;
 
-    // --- Fungsi Utama Ujian ---
+    function startTimer() {
+        let timeLeft = JEDA_WAKTU;
+        const timerMsg = document.getElementById('timer-message');
+        const nextBtn = document.getElementById('next-btn');
+        
+        nextBtn.disabled = true;
+        nextBtn.textContent = `Tunggu ${timeLeft} detik...`;
+        timerMsg.textContent = `Jeda ⏳ Soal berikutnya akan muncul dalam ${timeLeft} detik. Cermati soal!`;
 
-    function startTimer() {
-        let timeLeft = JEDA_WAKTU;
-        const timerMsg = document.getElementById('timer-message');
-        const nextBtn = document.getElementById('next-btn');
-        
-        nextBtn.disabled = true;
-        nextBtn.textContent = `Tunggu ${timeLeft} detik...`;
-        timerMsg.textContent = `Jeda ⏳ Soal berikutnya akan muncul dalam ${timeLeft} detik. Cermati soal!`;
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            if (timeLeft > 0) {
+                nextBtn.textContent = `Tunggu ${timeLeft} detik...`;
+            } else {
+                clearInterval(timerInterval);
+                timerMsg.textContent = 'Waktu Jeda Selesai. Silakan Jawab.';
+                nextBtn.disabled = false;
+                nextBtn.textContent = (currentQuestionIndex === questions.length - 1) ? 'Kirim Jawaban' : 'Soal Berikutnya';
+            }
+        }, 1000);
+    }
 
+    function renderQuestion() {
+        const contentArea = document.getElementById('quiz-content');
+        const status = document.getElementById('status');
+        const nextBtn = document.getElementById('next-btn');
 
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            if (timeLeft > 0) {
-                nextBtn.textContent = `Tunggu ${timeLeft} detik...`;
-            } else {
-                clearInterval(timerInterval);
-                timerMsg.textContent = 'Waktu Jeda Selesai. Silakan Jawab.';
-                nextBtn.disabled = false;
-                nextBtn.textContent = (currentQuestionIndex === questions.length - 1) ? 'Kirim Jawaban' : 'Soal Berikutnya';
-            }
-        }, 1000);
-    }
+        if (currentQuestionIndex < 0) {
+            contentArea.innerHTML = `
+                <div class="required-error" id="data-error">Harap isi Nama Lengkap dan pilih Kelas Anda.</div>
+                <h3>Masukkan Data Diri</h3>
+                <label for="student-name">Nama Lengkap:</label>
+                <input type="text" id="student-name" required>
+                <label for="student-class">Pilih Kelas:</label>
+                <select id="student-class" required>
+                    <option value="">-- Pilih Kelas --</option>
+                    <option value="X DKV 1">X DKV 1</option>
+                    <option value="X DKV 2">X DKV 2</option>
+                    <option value="X APHP">X APHP</option>
+                </select>
+            `;
+            nextBtn.textContent = 'Mulai Ujian';
+            nextBtn.disabled = false;
+            status.textContent = 'Siap Memulai Ujian.';
+            document.getElementById('timer-message').textContent = '';
+            return;
+        }
 
-    function renderQuestion() {
-        const contentArea = document.getElementById('quiz-content');
-        const status = document.getElementById('status');
-        const nextBtn = document.getElementById('next-btn');
+        if (currentQuestionIndex < questions.length) {
+            const q = questions[currentQuestionIndex];
+            status.textContent = `Soal ${currentQuestionIndex + 1} dari ${questions.length}`;
+            
+            let htmlContent = `<h4>${currentQuestionIndex + 1}. ${q.text} (${q.score} Poin)</h4>`;
+            
+            if (q.type === 'mc') {
+                htmlContent += '<div class="options">';
+                q.options.forEach((opt, i) => {
+                    const labelId = `q${currentQuestionIndex}-opt${i}`;
+                    const letter = String.fromCharCode(65 + i);
+                    htmlContent += `
+                        <label for="${labelId}">
+                            <input type="radio" name="q${currentQuestionIndex}" id="${labelId}" value="${i}">
+                            <span>${letter}. ${opt}</span>
+                        </label>
+                    `;
+                });
+                htmlContent += '</div>';
+            } else if (q.type === 'essay') {
+                htmlContent += `<textarea id="essay-answer" placeholder="Tulis jawaban Anda di sini..."></textarea>`;
+            }
 
-        if (currentQuestionIndex < 0) {
-            // Tampilan Awal: Input Nama & Kelas
-            contentArea.innerHTML = `
-                <div class="required-error" id="data-error">Harap isi Nama Lengkap dan pilih Kelas Anda.</div>
-                <h3>Masukkan Data Diri</h3>
-                <label for="student-name">Nama Lengkap:</label>
-                <input type="text" id="student-name" required>
+            contentArea.innerHTML = htmlContent;
+            nextBtn.textContent = (currentQuestionIndex === questions.length - 1) ? 'Kirim Jawaban' : 'Soal Berikutnya';
 
-                <label for="student-class">Pilih Kelas:</label>
-                <select id="student-class" required>
-                    <option value="">-- Pilih Kelas --</option>
-                    <option value="X DKV 1">X DKV 1</option>
-                    <option value="X DKV 2">X DKV 2</option>
-                    <option value="X APHP">X APHP</option>
-                </select>
-            `;
-            nextBtn.textContent = 'Mulai Ujian';
-            nextBtn.disabled = false;
-            status.textContent = 'Siap Memulai Ujian.';
-            document.getElementById('timer-message').textContent = '';
-            return;
-        }
+            if (currentQuestionIndex > 0) {
+                startTimer();
+            } else {
+                nextBtn.disabled = false;
+                document.getElementById('timer-message').textContent = 'Selamat Mengerjakan!';
+            }
+        } else {
+            finishQuiz();
+        }
+    }
 
-        if (currentQuestionIndex < questions.length) {
-            // Tampilan Soal
-            const q = questions[currentQuestionIndex];
-            status.textContent = `Soal ${currentQuestionIndex + 1} dari ${questions.length}`;
-            
-            let htmlContent = `<h4>${currentQuestionIndex + 1}. ${q.text} (${q.score} Poin)</h4>`;
-            
-            if (q.type === 'mc') {
-                // Pilihan Ganda
-                htmlContent += '<div class="options">';
-                q.options.forEach((opt, i) => {
-                    const labelId = `q${currentQuestionIndex}-opt${i}`;
-                    const letter = String.fromCharCode(65 + i);
-                    htmlContent += `
-                        <label for="${labelId}">
-                            <input type="radio" name="q${currentQuestionIndex}" id="${labelId}" value="${i}">
-                            <span>${letter}. ${opt}</span>
-                        </label>
-                    `;
-                });
-                htmlContent += '</div>';
-            } else if (q.type === 'essay') {
-                // Esai
-                htmlContent += `<textarea id="essay-answer" placeholder="Tulis jawaban Anda di sini..."></textarea>`;
-            }
+    function checkAnswer() {
+        const q = questions[currentQuestionIndex];
+        let studentAnswer = null;
+        let scoreEarned = 0;
 
-            contentArea.innerHTML = htmlContent;
-            
-            // Atur tombol 'Kirim Jawaban' jika ini soal terakhir
-            nextBtn.textContent = (currentQuestionIndex === questions.length - 1) ? 'Kirim Jawaban' : 'Soal Berikutnya';
+        if (q.type === 'mc') {
+            const selectedOption = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
+            if (!selectedOption) return false; 
+            studentAnswer = parseInt(selectedOption.value);
+            scoreEarned = (studentAnswer === q.answer) ? q.score : 0;
+            studentData.passingScore += q.score;
+        } else if (q.type === 'essay') {
+            const essayText = document.getElementById('essay-answer').value.trim();
+            if (essayText === '') return false; 
+            studentAnswer = essayText;
+            scoreEarned = q.score; 
+            studentData.passingScore += q.score;
+        }
 
+        studentData.answers.push({ q_index: currentQuestionIndex, q_type: q.type, q_text: q.text.substring(0, 50) + '...', student_answer: studentAnswer, score_earned: scoreEarned });
+        studentData.totalScore += scoreEarned; 
+        return true;
+    }
 
-            // Jika ini bukan soal pertama (setelah data diri), aktifkan timer jeda
-            if (currentQuestionIndex > 0) {
-                startTimer();
-            } else {
-                nextBtn.disabled = false;
-                document.getElementById('timer-message').textContent = 'Selamat Mengerjakan!';
-            }
+    function nextQuestion() {
+        if (currentQuestionIndex === -1) {
+            const nameInput = document.getElementById('student-name').value.trim();
+            const classSelect = document.getElementById('student-class').value;
+            if (nameInput === '' || classSelect === '') {
+                document.getElementById('data-error').style.display = 'block';
+                return;
+            }
+            document.getElementById('data-error').style.display = 'none';
+            studentData.name = nameInput;
+            studentData.class = classSelect;
+            currentQuestionIndex++;
+            renderQuestion();
+            return;
+        }
 
-        } else {
-            // Tampilan Selesai
-            finishQuiz();
-        }
-    }
+        if (checkAnswer()) {
+            currentQuestionIndex++;
+            renderQuestion();
+        } else {
+            alert('Harap jawab soal saat ini sebelum melanjutkan!');
+        }
+    }
 
-    function checkAnswer() {
-        const q = questions[currentQuestionIndex];
-        let studentAnswer = null;
-        let isCorrect = false;
-        let scoreEarned = 0;
+    function finishQuiz() {
+        const contentArea = document.getElementById('quiz-content');
+        const navigation = document.getElementById('quiz-navigation');
+        const status = document.getElementById('status');
+        
+        contentArea.innerHTML = `
+            <h3>Ujian Selesai! 🎉</h3>
+            <p>Terima kasih, <strong>${studentData.name}</strong> dari kelas <strong>${studentData.class}</strong>.</p>
+            <p>Jawaban Anda telah direkam dan dikirim.</p>
+            <p>Skor Pilihan Ganda (Otomatis): <strong>${studentData.totalScore} / ${studentData.passingScore - questions[questions.length-1].score}</strong></p>
+            <p style="color:#1a237e; font-weight:bold;">Tunggu nilai akhir Anda setelah Esai dinilai manual.</p>
+        `;
+        navigation.style.display = 'none';
+        status.textContent = 'Selesai';
+        sendToGoogleSheet();
+    }
 
-        if (q.type === 'mc') {
-            const selectedOption = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
-            if (!selectedOption) return false; 
+    function sendToGoogleSheet() {
+        fetch(GOOGLE_SHEET_ENDPOINT, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(studentData)
+        })
+        .then(() => console.log('Data terkirim'))
+        .catch(err => console.error('Error:', err));
+    }
 
-            studentAnswer = parseInt(selectedOption.value);
-            isCorrect = (studentAnswer === q.answer);
-            scoreEarned = isCorrect ? q.score : 0;
-
-            studentData.passingScore += q.score;
-        } else if (q.type === 'essay') {
-            const essayText = document.getElementById('essay-answer').value.trim();
-            if (essayText === '') return false; 
-            
-            studentAnswer = essayText;
-            scoreEarned = q.score; 
-            
-            studentData.passingScore += q.score;
-        }
-
-        studentData.answers.push({
-            q_index: currentQuestionIndex,
-            q_type: q.type,
-            q_text: q.text.substring(0, 50) + '...',
-            student_answer: studentAnswer,
-            score_earned: scoreEarned 
-        });
-        
-        studentData.totalScore += scoreEarned; 
-        return true;
-    }
-
-    function nextQuestion() {
-        if (currentQuestionIndex === -1) {
-            // Validasi Data Diri
-            const nameInput = document.getElementById('student-name').value.trim();
-            const classSelect = document.getElementById('student-class').value;
-            
-            if (nameInput === '' || classSelect === '') {
-                document.getElementById('data-error').style.display = 'block';
-                return;
-            }
-            document.getElementById('data-error').style.display = 'none';
-            studentData.name = nameInput;
-            studentData.class = classSelect;
-            currentQuestionIndex++;
-            renderQuestion();
-            return;
-        }
-
-        // Cek Jawaban Sebelum Lanjut atau Selesai
-        if (checkAnswer()) {
-            currentQuestionIndex++;
-            renderQuestion();
-        } else {
-            alert('Harap jawab soal saat ini sebelum melanjutkan!');
-        }
-    }
-
-    function finishQuiz() {
-        const contentArea = document.getElementById('quiz-content');
-        const navigation = document.getElementById('quiz-navigation');
-        const status = document.getElementById('status');
-        
-        contentArea.innerHTML = `
-            <h3>Ujian Selesai! 🎉</h3>
-            <p>Terima kasih, <strong>${studentData.name}</strong> dari kelas <strong>${studentData.class}</strong>.</p>
-            <p>Jawaban Anda telah direkam dan dikirim.</p>
-            <p>Skor Pilihan Ganda (Otomatis): <strong>${studentData.totalScore} / ${studentData.passingScore - questions[questions.length-1].score}</strong></p>
-            <p style="color:#1a237e; font-weight:bold;">Tunggu nilai akhir Anda setelah Esai dinilai manual.</p>
-        `;
-        navigation.style.display = 'none';
-        status.textContent = 'Selesai';
-
-        // Kirim data ke Google Sheet
-        sendToGoogleSheet();
-    }
-
-    // Fungsi pengiriman data ke Apps Script (sama seperti sebelumnya)
-    function sendToGoogleSheet() {
-        const dataToSend = {
-            timestamp: new Date().toLocaleString('id-ID'),
-            Nama_Lengkap: studentData.name,
-            Kelas: studentData.class,
-            Score_PG: studentData.totalScore, 
-            Score_Max: studentData.passingScore, 
-            Raw_Answers: JSON.stringify(studentData.answers.map(a => ({
-                q: a.q_text, 
-                ans: a.student_answer, 
-                type: a.q_type,
-                score: a.score_earned
-            })))
-        };
-
-        fetch(GOOGLE_SHEET_ENDPOINT, {
-            method: 'POST',
-            mode: 'no-cors', 
-            cache: 'no-cache',
-            body: JSON.stringify(dataToSend)
-        })
-        .then(() => console.log('Data telah dikirim ke Apps Script (Status tidak dapat dikonfirmasi karena no-cors).'))
-        .catch(error => console.error('Gagal mengirim data:', error));
-    }
-
-    document.addEventListener('DOMContentLoaded', renderQuestion);
+    renderQuestion();
 </script>
-
 </body>
 </html>
