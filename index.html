@@ -41,9 +41,6 @@
         .option-radio span:hover {
             background-color: #f3f4f6;
         }
-        textarea {
-            min-height: 150px;
-        }
         /* Simple animation for loading state */
         .loading-spinner {
             border: 4px solid rgba(0, 0, 0, 0.1);
@@ -63,7 +60,7 @@
 <div class="bg-white shadow-2xl rounded-xl max-w-xl w-full p-6 sm:p-8 space-y-6">
     <div class="header text-center space-y-2">
         <h2 class="text-3xl font-extrabold text-indigo-700">Ujian Informatika</h2>
-        <p class="text-gray-500">20 Soal Bab 1 & 2 - Pilihan Ganda dan Esai</p>
+        <p class="text-gray-500">20 Soal Pilihan Ganda (Total 100 Poin)</p>
         <div id="status" class="text-sm font-medium text-indigo-500">Siap Memulai.</div>
         <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-sm" role="alert">
             <span class="block sm:inline" id="error-text"></span>
@@ -86,10 +83,10 @@
 <script>
     // ⚠️ PERHATIAN: GANTI INI DENGAN URL GOOGLE APPS SCRIPT WEB APP ANDA
     const GOOGLE_SHEET_ENDPOINT = "https://script.google.com/macros/s/[PASTIKAN_ANDA_GANTI_INI_DENGAN_URL_ANDA]/exec"; 
-    const JEDA_WAKTU = 0; // Detik
+    const JEDA_WAKTU = 10; // Detik
 
-    // --- DAFTAR 20 SOAL LENGKAP (19 MC, 1 ESAI) ---
-    // Jawaban (answer) selalu merujuk pada index (0-4) di array 'options'
+    // --- DAFTAR 20 SOAL LENGKAP (SEMUA MC) ---
+    // Semua soal PG bernilai 5 poin, total maksimal 100
     const originalQuestions = [
         { 
             type: 'mc', 
@@ -338,18 +335,26 @@
             answer: 4, // E
             score: 5 
         },
-        // Soal Esai (1 soal)
+        // Soal Esai yang diubah menjadi PG (Soal ke-20)
         { 
-            type: 'essay', 
-            text: 'Jelaskan peran validitas eksternal dalam generalisasi data.', 
-            score: 10 // Skor Esai
+            type: 'mc', 
+            text: 'Dalam konteks penelitian kuantitatif, peran utama dari "validitas eksternal" dalam generalisasi data adalah untuk . . . .', 
+            options: [
+                'memastikan akurasi hasil pengukuran instrumen penelitian',
+                'mengukur seberapa jauh hasil penelitian dapat diaplikasikan ke populasi yang lebih luas', // Jawaban Benar
+                'menentukan konsistensi hasil penelitian jika diulang di waktu yang berbeda',
+                'memperkuat hubungan sebab-akibat antara variabel yang diteliti',
+                'membuktikan bahwa instrumen penelitian bebas dari kesalahan sistematis'
+            ], 
+            answer: 1, // B
+            score: 5 
         }
     ];
     // --- AKHIR DAFTAR 20 SOAL LENGKAP ---
 
     let questions = [...originalQuestions]; // Buat salinan yang akan diacak
     let currentQuestionIndex = -1;
-    let studentData = { name: '', class: '', answers: [], totalScore: 0, maxScorePG: 0, passingScore: 0 };
+    let studentData = { name: '', class: '', answers: [], totalScore: 0, maxScore: 0 };
     let timerInterval;
 
     /**
@@ -425,9 +430,9 @@
                     <label class="block text-sm font-medium text-gray-700">Kelas:</label>
                     <select id="student-class" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
                         <option value="">-- Pilih Kelas --</option>
-                        <option value="X DKV 1">X DKV 1">X DKV 1</option>
-                        <option value="X DKV 2">X DKV 2">X DKV 2</option>
-                        <option value="X APHP">X APHP">X APHP</option>
+                        <option value="X DKV 1">X DKV 1</option>
+                        <option value="X DKV 2">X DKV 2</option>
+                        <option value="X APHP">X APHP</option>
                     </select>
                 </div>
             `;
@@ -459,42 +464,33 @@
             const existingAnswer = studentData.answers.find(a => a.q_index === currentQuestionIndex);
             const studentAnswerOriginalIndex = existingAnswer ? existingAnswer.student_answer : null;
 
-            if (q.type === 'mc') {
-                // 1. Siapkan opsi dengan indeks asli
-                const optionsWithIndex = q.options.map((text, index) => ({
-                    text: text,
-                    originalIndex: index
-                }));
+            // 1. Siapkan opsi dengan indeks asli
+            const optionsWithIndex = q.options.map((text, index) => ({
+                text: text,
+                originalIndex: index
+            }));
 
-                // 2. Acak opsi untuk tampilan
-                shuffleArray(optionsWithIndex);
+            // 2. Acak opsi untuk tampilan
+            shuffleArray(optionsWithIndex);
+            
+            // 3. Render opsi (Hanya PG, karena sudah tidak ada esai)
+            optionsWithIndex.forEach((optData, i) => {
+                const labelId = `q${currentQuestionIndex}-opt${i}`;
+                const letter = String.fromCharCode(65 + i); // Display letters A, B, C...
+
+                // Nilai radio button adalah index ASLI opsi tersebut di array 'options'
+                const valueToStore = optData.originalIndex;
                 
-                // 3. Render opsi
-                optionsWithIndex.forEach((optData, i) => {
-                    const labelId = `q${currentQuestionIndex}-opt${i}`;
-                    const letter = String.fromCharCode(65 + i); // Display letters A, B, C...
-
-                    // Nilai radio button adalah index ASLI opsi tersebut di array 'options'
-                    const valueToStore = optData.originalIndex;
-                    
-                    // Cek apakah opsi yang sedang dirender adalah opsi yang sebelumnya dipilih siswa
-                    const isChecked = studentAnswerOriginalIndex !== null && studentAnswerOriginalIndex === valueToStore;
-                    
-                    htmlContent += `
-                        <label for="${labelId}" class="option-radio block">
-                            <input type="radio" name="q${currentQuestionIndex}" id="${labelId}" value="${valueToStore}" ${isChecked ? 'checked' : ''}>
-                            <span><span class="font-mono text-indigo-700 mr-2">${letter}.</span> ${optData.text}</span>
-                        </label>
-                    `;
-                });
-            } else if (q.type === 'essay') {
-                const essayText = studentAnswerOriginalIndex !== null ? studentAnswerOriginalIndex : '';
+                // Cek apakah opsi yang sedang dirender adalah opsi yang sebelumnya dipilih siswa
+                const isChecked = studentAnswerOriginalIndex !== null && studentAnswerOriginalIndex === valueToStore;
+                
                 htmlContent += `
-                    <textarea id="essay-answer" 
-                            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" 
-                            placeholder="Tulis jawaban esai Anda di sini...">${essayText}</textarea>
+                    <label for="${labelId}" class="option-radio block">
+                        <input type="radio" name="q${currentQuestionIndex}" id="${labelId}" value="${valueToStore}" ${isChecked ? 'checked' : ''}>
+                        <span><span class="font-mono text-indigo-700 mr-2">${letter}.</span> ${optData.text}</span>
+                    </label>
                 `;
-            }
+            });
             
             htmlContent += '</div>';
             contentArea.innerHTML = htmlContent;
@@ -516,7 +512,7 @@
 
     function checkAnswer() {
         const q = questions[currentQuestionIndex];
-        let studentAnswer = null; // Ini akan menyimpan ORIGINAL INDEX opsi PG atau teks Esai
+        let studentAnswer = null; // Ini akan menyimpan ORIGINAL INDEX opsi PG
         let answered = false;
         
         // Cek Jawaban PG
@@ -528,14 +524,6 @@
                 answered = true;
             }
         } 
-        // Cek Jawaban Esai
-        else if (q.type === 'essay') {
-            const essayText = document.getElementById('essay-answer').value.trim();
-            if (essayText !== '') {
-                studentAnswer = essayText;
-                answered = true;
-            }
-        }
         
         return { answered, studentAnswer };
     }
@@ -554,9 +542,8 @@
             studentData.name = nameInput;
             studentData.class = classSelect;
             
-            // Hitung Score_Max total (hanya sekali)
-            studentData.passingScore = questions.reduce((sum, q) => sum + q.score, 0);
-            studentData.maxScorePG = questions.filter(q => q.type === 'mc').reduce((sum, q) => sum + q.score, 0);
+            // Hitung Score_Max total (hanya sekali, sekarang semua PG)
+            studentData.maxScore = questions.reduce((sum, q) => sum + q.score, 0);
             
             currentQuestionIndex++;
             renderQuestion();
@@ -583,7 +570,8 @@
 
             // Hitung skor baru: studentAnswer adalah index ASLI opsi yang dipilih
             let newScoreEarned = 0;
-            if (q.type === 'mc' && studentAnswer === q.answer) {
+            // Semua soal adalah MC (PG)
+            if (studentAnswer === q.answer) {
                 newScoreEarned = q.score;
             } 
             
@@ -591,7 +579,7 @@
             studentData.answers.push({
                 q_index: currentQuestionIndex, // Index soal di array yang sudah diacak
                 q_type: q.type,
-                student_answer: studentAnswer, // Original Index (PG) atau Teks (Esai)
+                student_answer: studentAnswer, // Original Index (PG)
                 score_earned: newScoreEarned
             });
             
@@ -612,16 +600,15 @@
         const navigation = document.getElementById('quiz-navigation');
         const status = document.getElementById('status');
         
-        // Perbaikan di sini: Menampilkan skor PG per total skor Ujian (105)
+        // Tampilan Akhir (Semua PG, skor langsung final)
         contentArea.innerHTML = `
             <div class="text-center p-8 bg-green-50 rounded-lg border border-green-200">
                 <h3 class="text-2xl font-bold text-green-700 mb-2">Ujian Selesai 🎉</h3>
                 <p class="text-gray-600">Terima kasih, <b>${studentData.name}</b> (${studentData.class}).</p>
-                <p class="mt-4 text-lg font-semibold text-gray-800">
-                    Skor Pilihan Ganda Otomatis: <b>${studentData.totalScore}</b> / <b>${studentData.passingScore}</b>
+                <p class="mt-4 text-3xl font-extrabold text-gray-800">
+                    Skor Akhir: <b>${studentData.totalScore}</b> / <b>${studentData.maxScore}</b>
                 </p>
-                <p class="text-sm text-red-600 font-medium">Skor ini hanya mencakup nilai PG. Nilai Akhir (total skor maksimal: ${studentData.passingScore}) akan tersedia setelah koreksi Esai manual.</p>
-                <div id="submission-status" class="mt-4 text-indigo-500 font-medium">Sedang mengirim data...</div>
+                <div id="submission-status" class="mt-6 text-indigo-500 font-medium">Sedang mengirim data...</div>
             </div>
         `;
         navigation.style.display = 'none';
@@ -638,8 +625,8 @@
             timestamp: new Date().toLocaleString("id-ID"),
             Nama_Lengkap: studentData.name,
             Kelas: studentData.class,
-            Score_PG: studentData.totalScore, // Hanya skor PG
-            Score_Max: studentData.passingScore, // Total skor maksimum (PG + Esai)
+            Score_PG: studentData.totalScore, // Semua skor sekarang PG
+            Score_Max: studentData.maxScore, // Total skor maksimum (100)
             Raw_Answers: JSON.stringify(studentData.answers)
         };
         
@@ -676,26 +663,25 @@
             const res = await response.json();
 
             if (res.result === "success") {
-                submissionStatus.className = "mt-4 text-green-600 font-bold";
+                submissionStatus.className = "mt-6 text-green-600 font-bold";
                 submissionStatus.textContent = "Data Berhasil Terkirim ke Google Sheet!";
                 console.log("✅ Data terkirim:", res);
             } else {
-                submissionStatus.className = "mt-4 text-red-600 font-bold";
+                submissionStatus.className = "mt-6 text-red-600 font-bold";
                 submissionStatus.textContent = "Data GAGAL Terkirim. Cek konsol log untuk detail.";
                 console.error("❌ Error dari Server:", res.message);
             }
             
         } catch (err) {
-            submissionStatus.className = "mt-4 text-red-600 font-bold";
+            submissionStatus.className = "mt-6 text-red-600 font-bold";
             submissionStatus.textContent = "Data GAGAL Terkirim. Ada masalah koneksi/endpoint. Pastikan URL Google Apps Script Anda benar dan sudah di-deploy dengan izin 'Anyone'.";
             console.error("❌ Error saat Fetch:", err);
         }
     }
 
     // Inisiasi
-    // Inisiasi di sini agar studentData.passingScore dan maxScorePG terhitung di awal
-    studentData.passingScore = originalQuestions.reduce((sum, q) => sum + q.score, 0);
-    studentData.maxScorePG = originalQuestions.filter(q => q.type === 'mc').reduce((sum, q) => sum + q.score, 0);
+    // Hitung Score_Max total di awal
+    studentData.maxScore = originalQuestions.reduce((sum, q) => sum + q.score, 0);
     renderQuestion();
 </script>
 </body>
