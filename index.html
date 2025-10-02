@@ -79,12 +79,13 @@
 </div>
 
 <script>
-    // ⚠️ PERHATIAN: GANTI INI DENGAN URL GOOGLE APPS SCRIPT WEB APP ANDA
-    const GOOGLE_SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbwJeRVN8OgYevp1WRXeTu8H0QL7Xu8iYsdNY3nWEK636gjgne7LJZIQCTTqXdJMIf_F/exec"; // <<< GANTI INI
-   // const JEDA_WAKTU = 0; // Detik
+    // ⚠️ PERHATIAN: GANTI URL INI DENGAN URL GOOGLE APPS SCRIPT WEB APP ANDA YANG BARU
+    // PASTIKAN SUDAH DI-DEPLOY DENGAN AKSES "Anyone"
+    const GOOGLE_SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbwJeRVN8OgYevp1WRXeTu8H0QL7Xu8iYsdNY3nWEK636gjgne7LJZIQCTTqXdJMIf_F/exec"; // <<< GANTI INI DENGAN URL BARU ANDA
+    // const JEDA_WAKTU = 0; // Detik (default 0 agar langsung next, jika ingin ada delay, hilangkan tanda //)
+    const JEDA_WAKTU = 0; // Detik
 
     // --- DAFTAR 20 SOAL LENGKAP ---
-    // (Kode soal dihilangkan untuk efisiensi ruang, anggap sudah disalin dari kode Anda)
     const originalQuestions = [
         { type: 'mc', text: 'Metode pengujian reliabilitas data dalam rangka memperoleh data yang valid merupakan fase untuk . . . .', options: [ 'meningkatkan akurasi data', 'mengurangi sampel penelitian', 'menjamin data bebas dari bias', 'membandingkan data dengan teori', 'menentukan konsistensi pengukuran' ], answer: 4, score: 5 },
         { type: 'mc', text: 'Terkait potensi bias seleksi dalam analisis data, strategi yang tepat untuk memastikan sampel penelitian mewakili populasi adalah . . . .', options: [ 'memilih subjek secara acak', 'memilih subjek yang paling aktif secara sosial', 'menggunakan subjek yang paling mudah diakses', 'memilih subjek berdasarkan ketersediaan mereka', 'memfokuskan pada subjek dengan karakteristik yang paling ekstrem' ], answer: 0, score: 5 },
@@ -254,7 +255,7 @@
             nextBtnText.textContent = (currentQuestionIndex === questions.length - 1) ? 'Kirim Jawaban' : 'Soal Berikutnya';
 
             // Mulai timer setelah soal pertama
-            if (currentQuestionIndex > 0) {
+            if (currentQuestionIndex > 0 && JEDA_WAKTU > 0) {
                 startTimer();
             } else {
                 // Soal pertama tidak perlu timer
@@ -388,18 +389,19 @@
         try {
             // Implementasi Exponential Backoff untuk menangani throttling
             const maxRetries = 3;
-            let response;
-
+            
             for (let i = 0; i < maxRetries; i++) {
                 try {
-                    response = await fetch(GOOGLE_SHEET_ENDPOINT, {
+                    const response = await fetch(GOOGLE_SHEET_ENDPOINT, {
                         method: "POST",
-                        headers: { "Content-Type": "application/json" },
+                        // Tidak perlu headers jika menggunakan application/x-www-form-urlencoded,
+                        // tetapi untuk JSON payload, ini lebih modern dan harusnya di-handle Apps Script
+                        headers: { "Content-Type": "application/json" }, 
                         // Pastikan payload di-STRINGIFY sebelum dikirim
                         body: JSON.stringify(payload) 
                     });
                     
-                    // Cek apakah status respons menunjukkan kegagalan (misal: 4xx, 5xx)
+                    // Cek apakah status respons menunjukkan kegagalan HTTP (misal: 4xx, 5xx)
                     if (!response.ok) {
                         throw new Error(`HTTP Error Status: ${response.status} (${response.statusText})`);
                     }
@@ -426,7 +428,13 @@
             }
         } catch (error) {
             console.error("Final Submission Error:", error);
-            submissionStatus.innerHTML = `<span class="text-red-600 font-bold">❌ Data GAGAL Terkirim.</span><br><span class="text-sm text-red-500">Detail: ${error.message}. Cek URL Web App Anda.</span>`;
+            // Menampilkan pesan error yang lebih jelas ke pengguna
+            let detailMessage = error.message;
+            if (error.message.includes('Failed to fetch')) {
+                 detailMessage = "Gagal terhubung ke server. Periksa URL Apps Script dan koneksi internet Anda.";
+            }
+
+            submissionStatus.innerHTML = `<span class="text-red-600 font-bold">❌ Data GAGAL Terkirim.</span><br><span class="text-sm text-red-500">Detail: ${detailMessage}. Cek URL Web App Anda.</span>`;
         }
     }
 
