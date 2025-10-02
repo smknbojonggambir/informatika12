@@ -79,10 +79,8 @@
 </div>
 
 <script>
-    // ⚠️ PERHATIAN: GANTI URL INI DENGAN URL GOOGLE APPS SCRIPT WEB APP ANDA YANG BARU
-    // PASTIKAN SUDAH DI-DEPLOY DENGAN AKSES "Anyone"
-    const GOOGLE_SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbxrKTuV2_ZO_hZ-Qo5__EQKwHKuzxASl7trQTG5-7W5uku7vCG-55nmzfrZc-5PzTAW/exec"; // <<< GANTI INI DENGAN URL BARU ANDA
-    // const JEDA_WAKTU = 0; // Detik (default 0 agar langsung next, jika ingin ada delay, hilangkan tanda //)
+    // ✅ URL SUDAH DIPERBARUI DENGAN URL AKTIF YANG ANDA KONFIRMASI
+    const GOOGLE_SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbxrKTuV2_ZO_hZ-Qo5__EQKwHKuzxASl7trQTG5-7W5uku7vCG-55nmzfrZc-5PzTAW/exec";
     const JEDA_WAKTU = 0; // Detik
 
     // --- DAFTAR 20 SOAL LENGKAP ---
@@ -394,30 +392,30 @@
                 try {
                     const response = await fetch(GOOGLE_SHEET_ENDPOINT, {
                         method: "POST",
-                        // Tidak perlu headers jika menggunakan application/x-www-form-urlencoded,
-                        // tetapi untuk JSON payload, ini lebih modern dan harusnya di-handle Apps Script
                         headers: { "Content-Type": "application/json" }, 
-                        // Pastikan payload di-STRINGIFY sebelum dikirim
                         body: JSON.stringify(payload) 
                     });
                     
                     // Cek apakah status respons menunjukkan kegagalan HTTP (misal: 4xx, 5xx)
                     if (!response.ok) {
+                        // Jika respons bukan 200 OK, langsung lempar error untuk retry
                         throw new Error(`HTTP Error Status: ${response.status} (${response.statusText})`);
                     }
 
+                    // Hanya parse JSON jika respons OK
                     const result = await response.json();
 
                     if (result.result === 'success') {
                         submissionStatus.innerHTML = '<span class="text-green-600 font-bold">✅ Data berhasil terkirim!</span>';
                         return; // Sukses, keluar dari loop retry
                     } else {
-                        // Error dari Apps Script (catch di doPost)
+                        // Error dari Apps Script (catch di doPost, bukan HTTP error)
                         throw new Error(`Apps Script Error: ${result.message}`);
                     }
                 } catch (error) {
                     if (i < maxRetries - 1) {
                         const delay = Math.pow(2, i) * 1000;
+                        // console.error(`Attempt ${i + 1} failed. Retrying in ${delay / 1000}s. Error: ${error.message}`);
                         submissionStatus.innerHTML = `<span class="text-yellow-600">Gagal kirim. Mencoba lagi dalam ${delay / 1000} detik... (${i + 1}/${maxRetries})</span>`;
                         await new Promise(resolve => setTimeout(resolve, delay));
                     } else {
@@ -431,10 +429,12 @@
             // Menampilkan pesan error yang lebih jelas ke pengguna
             let detailMessage = error.message;
             if (error.message.includes('Failed to fetch')) {
-                 detailMessage = "Gagal terhubung ke server. Periksa URL Apps Script dan koneksi internet Anda.";
+                 detailMessage = "Gagal terhubung ke server. Mungkin masalah CORS atau Firewall jaringan.";
+            } else if (error.message.includes('Apps Script Error: Gagal membuka Spreadsheet')) {
+                 detailMessage = "Gagal membuka Sheet di Apps Script. Periksa ID Spreadsheet Anda.";
             }
 
-            submissionStatus.innerHTML = `<span class="text-red-600 font-bold">❌ Data GAGAL Terkirim.</span><br><span class="text-sm text-red-500">Detail: ${detailMessage}. Cek URL Web App Anda.</span>`;
+            submissionStatus.innerHTML = `<span class="text-red-600 font-bold">❌ Data GAGAL Terkirim.</span><br><span class="text-sm text-red-500">Detail: ${detailMessage}</span>`;
         }
     }
 
