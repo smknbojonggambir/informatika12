@@ -1,3 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Gaya dasar untuk spinner */
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #4f46e5;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="max-w-xl mx-auto p-4 md:p-8 bg-white shadow-lg rounded-xl mt-10">
+        
+        <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" role="alert">
+            <p id="error-text" class="font-bold"></p>
+        </div>
+
+        <div id="quiz-content">
+            </div>
+
+        <div id="quiz-navigation" class="mt-8 border-t pt-4 flex justify-between items-center">
+            <div id="status" class="text-sm text-gray-500"></div>
+            
+            <div class="text-sm text-indigo-500 font-medium" id="timer-message"></div>
+
+            <button id="next-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition duration-150">
+                <span>Mulai Ujian</span>
+            </button>
+        </div>
+    </div>
+    
+    </body>
+</html>
+
+
 <script>
     // ⚠️ GANTI DENGAN URL DARI DEPLOYMENT APPS SCRIPT BARU ANDA (yang terhubung ke GitHub)
     const GITHUB_COMMIT_ENDPOINT = "https://script.google.com/macros/s/AKfycbz8vtIyu_Dobf95vnP323adhWWPnQDsGIzPvP5ShWVLpXlwPjTzzjau20SifGVMk_MU/exec"; 
@@ -92,6 +137,11 @@
         const contentArea = document.getElementById('quiz-content');
         const status = document.getElementById('status');
         const nextBtn = document.getElementById('next-btn');
+        // PASTIKAN ELEMEN next-btn ADA di HTML
+        if (!nextBtn) {
+            console.error("Elemen tombol 'next-btn' tidak ditemukan. Pastikan Anda memiliki tombol dengan id='next-btn' di HTML.");
+            return;
+        }
         const nextBtnText = nextBtn.querySelector('span');
         document.getElementById('timer-message').textContent = '';
 
@@ -285,36 +335,36 @@
                 <div id="submission-status" class="mt-6 text-indigo-500 font-medium">Sedang mengirim data...</div>
             </div>
         `;
-        navigation.style.display = 'none';
+        // Cek keberadaan navigation sebelum mengubah style
+        if (navigation) {
+            navigation.style.display = 'none';
+        }
         status.textContent = 'Selesai';
         // 🚨 Panggil fungsi pengiriman ke GitHub
         sendToGitHub(); 
     }
 
-    // 🔗 FUNGSI BARU: Kirim data ke GitHub melalui Apps Script Proxy
+    // 🔗 FUNGSI: Kirim data ke GitHub melalui Apps Script Proxy
     async function sendToGitHub() {
         const submissionStatus = document.getElementById('submission-status');
         submissionStatus.innerHTML = '<div class="flex items-center justify-center space-x-2"><div class="loading-spinner"></div><span>Sedang mengirim data ke GitHub...</span></div>';
 
         // 📝 Format data sesuai kebutuhan rekap (dipisahkan TAB \t)
-        // Raw_Answers di-stringy-kan dan di-escape untuk aman
         const rawAnswersEscaped = JSON.stringify(studentData.answers).replace(/"/g, '""');
         
         // Buat satu baris data (record)
         const record = [
             new Date().toLocaleString("id-ID"),
-            studentData.name.replace(/\t|\n|\r/g, ' '), // Bersihkan dari karakter control
+            studentData.name.replace(/\t|\n|\r/g, ' '),
             studentData.class.replace(/\t|\n|\r/g, ' '), 
             studentData.totalScore,
             studentData.maxScore,
             rawAnswersEscaped 
-        ].join('\t') + '\n'; // Gunakan TAB (\t) sebagai delimiter, tambah newline (\n)
+        ].join('\t') + '\n'; 
 
         // Payload yang dikirim ke Apps Script
         const payload = {
-            // Ini adalah baris data yang akan ditambahkan ke file di GitHub
             content: record, 
-            // Kirim juga metadata siswa untuk pesan commit
             Nama_Lengkap: studentData.name, 
             Kelas: studentData.class,
             Score_PG: studentData.totalScore
@@ -338,6 +388,7 @@
                     const result = await response.json();
 
                     if (result.result === 'success') {
+                        // PERBAIKAN: Menghilangkan referensi FILE_PATH yang tidak terdefinisi
                         submissionStatus.innerHTML = `<span class="text-green-600 font-bold">✅ Data berhasil terkirim dan tersimpan di GitHub (rekap_ujian.tsv)!</span>`;
                         return; // Sukses
                     } else {
@@ -362,5 +413,16 @@
     }
 
     // Panggil renderQuestion saat halaman dimuat
-    window.onload = renderQuestion;
+    window.onload = function() {
+        renderQuestion();
+        
+        // WAJIB: Pasang event listener untuk tombol Lanjut/Mulai
+        const nextBtn = document.getElementById('next-btn');
+        if (nextBtn) {
+            nextBtn.addEventListener('click', nextQuestion);
+        } else {
+             // Ini akan tampil di Console jika tombol utama tidak ditemukan
+             console.error("Tombol 'next-btn' tidak ditemukan. Pastikan HTML Anda memilikinya!");
+        }
+    };
 </script>
