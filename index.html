@@ -458,7 +458,7 @@
             method: 'POST',
             mode: 'no-cors', 
             cache: 'no-cache',
-            headers: { 'Content-Type': 'application/json' },
+            //headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dataToSend)
         })
         .then(() => console.log('Data berhasil dikirim ke Google Sheet (via Apps Script)!'))
