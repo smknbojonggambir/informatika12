@@ -2,17 +2,18 @@
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *"); 
 header("Access-Control-Allow-Methods: POST"); 
+error_reporting(0); // jangan tampilkan warning/notice HTML
 
 $host = "brmklltefai8500pw9va-mysql.services.clever-cloud.com";
-$user = "u5dhutcyrle9lxrj";        // ganti sesuai setting MySQL kamu
-$pass = "3AZLbunTMLrDkMLaBM81";            // ganti password MySQL kamu
+$user = "u5dhutcyrle9lxrj";
+$pass = "3AZLbunTMLrDkMLaBM81";
 $db   = "brmklltefai8500pw9va";
 
 $conn = new mysqli($host, $user, $pass, $db);
 
 if ($conn->connect_error) {
     http_response_code(500);
-    echo json_encode(["result" => "error", "message" => "DB Connection failed"]);
+    echo json_encode(["result" => "error", "message" => "DB Connection failed: " . $conn->connect_error]);
     exit;
 }
 
@@ -43,4 +44,3 @@ if ($conn->query($sql) === TRUE) {
 }
 
 $conn->close();
-?>
