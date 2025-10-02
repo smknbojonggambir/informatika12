@@ -5,26 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ujian Informatika - Soal Per Soal</title>
     <style>
-        /* Modern Reset and Base Styles */
+        /* Global Reset and Modern Base */
+        :root {
+            --primary-color: #3f51b5; /* Indigo */
+            --accent-color: #ff9800; /* Amber */
+            --bg-light: #f4f6f8;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 8px;
+        }
+
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             display: flex; 
             justify-content: center; 
-            align-items: center; 
+            align-items: flex-start; /* Ubah ke flex-start agar konten dimulai dari atas di desktop */
             min-height: 100vh; 
-            background-color: #f0f4f8; /* Light blue/gray background */
+            background-color: var(--bg-light); 
             margin: 0;
-            padding: 20px;
+            padding: 30px 20px;
         }
         
         /* Container modern look */
         .container { 
             background-color: #ffffff; 
-            padding: 25px; 
-            border-radius: 12px; 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Softer, deeper shadow */
+            padding: 30px; 
+            border-radius: var(--radius); 
+            box-shadow: var(--card-shadow); 
             width: 100%; 
-            max-width: 700px; /* Increased max width for better desktop view */
+            max-width: 750px; /* Lebar lebih nyaman */
             box-sizing: border-box;
             animation: fadeIn 0.8s ease-out;
         }
@@ -34,51 +42,68 @@
             text-align: center; 
             margin-bottom: 30px; 
             padding-bottom: 15px;
-            border-bottom: 2px solid #e0e0e0;
+            border-bottom: 1px solid #e0e0e0;
         }
         .header h2 {
-            color: #1a237e; /* Deep blue header color */
+            color: var(--primary-color); 
             margin-bottom: 5px;
+            font-size: 1.8em;
         }
         #status {
-            font-size: 0.9em;
+            font-size: 1em;
             color: #607d8b;
+            font-weight: 500;
         }
 
         /* Question Area */
-        .question-area { 
-            min-height: 200px; 
-            margin-bottom: 20px;
-        }
         .question-area h4 {
-            color: #37474f; /* Dark text for question */
+            color: #37474f; 
             margin-top: 0;
-            margin-bottom: 20px;
-            line-height: 1.4;
+            margin-bottom: 25px;
+            line-height: 1.6; /* Lebih mudah dibaca */
+            font-size: 1.2em;
         }
 
-        /* Options (Pilihan Ganda) Modern Card Style */
+        /* Options (Pilihan Ganda) Card Style - DITINGKATKAN */
         .options label { 
-            display: flex; /* Use flexbox for alignment */
+            display: flex;
             align-items: center;
-            margin: 10px 0; 
-            padding: 15px; 
-            border: 1px solid #cfd8dc; 
-            border-radius: 8px; 
+            margin: 12px 0; 
+            padding: 18px 15px; /* Padding lebih besar */
+            border: 2px solid #e3e8ed; /* Border lebih tebal */
+            border-radius: var(--radius); 
             cursor: pointer; 
-            transition: all 0.2s ease; /* Smooth transition */
-            background-color: #fcfcfc;
+            transition: all 0.3s ease;
+            background-color: #ffffff;
+            font-size: 1.05em;
+            line-height: 1.4;
         }
         .options label:hover { 
-            background-color: #e3f2fd; /* Light hover effect */
-            border-color: #90caf9;
+            background-color: #f5f5f5; 
+            border-color: #c5cae9; /* Light primary color */
         }
         .options input[type="radio"] { 
-            /* Hide default radio button */
             position: absolute; 
             opacity: 0; 
             pointer-events: none;
         }
+        /* Tampilan Radio Saat Terpilih */
+        .options input[type="radio"]:checked + span::before {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px #ffffff, 0 0 0 5px var(--primary-color);
+        }
+        .options input[type="radio"]:checked + span { 
+            font-weight: 600; 
+            color: var(--primary-color);
+        }
+
+        /* Highlight Box Ketika Label Terpilih */
+        .options input[type="radio"]:checked ~ label {
+            border-color: var(--primary-color);
+            background-color: #e8eaf6; /* Very light background for selected */
+        }
+
         /* Custom radio button appearance */
         .options input[type="radio"] + span::before {
             content: '';
@@ -89,88 +114,117 @@
             border: 2px solid #90a4ae;
             margin-right: 15px;
             flex-shrink: 0;
-            transition: border-color 0.2s, background-color 0.2s;
-        }
-        .options input[type="radio"]:checked + span::before {
-            background-color: #1a237e;
-            border-color: #1a237e;
-        }
-        .options input[type="radio"]:checked + span { 
-            font-weight: 600; 
-            color: #1a237e;
+            transition: all 0.2s ease;
         }
         
-        /* Input/Textarea Styling (Data Diri & Esai) */
+        /* Input/Textarea Styling (Data Diri & Esai) - DITINGKATKAN */
         input[type="text"], select, #essay-answer {
             width: 100%; 
-            padding: 12px; 
+            padding: 14px; /* Padding lebih besar */
             margin-bottom: 20px;
-            border: 1px solid #ccc; 
-            border-radius: 6px;
+            border: 1px solid #bdc3c7; 
+            border-radius: var(--radius);
             box-sizing: border-box;
             font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
+        input[type="text"]:focus, select:focus, #essay-answer:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+            outline: none;
+        }
+
         #essay-answer { 
-            height: 120px; 
+            height: 150px; /* Tinggi lebih besar untuk esai */
             resize: vertical; 
         }
 
         /* Navigation and Buttons */
         .navigation { 
             display: flex; 
-            justify-content: flex-end; /* Align button to the right */
+            justify-content: flex-end; 
             margin-top: 30px; 
         }
         .btn { 
-            padding: 12px 30px; /* Larger padding for better mobile tap */
-            background-color: #3f51b5; /* Primary action color */
+            padding: 14px 35px; /* Padding tombol lebih nyaman */
+            background-color: var(--primary-color); 
             color: white; 
             border: none; 
-            border-radius: 8px; 
+            border-radius: var(--radius); 
             cursor: pointer; 
             transition: background-color 0.3s, transform 0.1s; 
             font-size: 1.1em;
             font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .btn:hover:not(:disabled) { 
             background-color: #303f9f; 
+            transform: translateY(-1px); /* Efek hover 3D ringan */
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
         }
         .btn:disabled { 
             background-color: #b0bec5; 
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
-        /* Timer/Error Messages */
+        /* Timer/Error Messages - DITINGKATKAN */
         #timer-message { 
             text-align: center; 
-            margin-top: 15px; 
+            margin-top: 20px; 
             font-size: 1.2em; 
-            color: #d32f2f; /* Darker red for urgency */
-            padding: 10px;
-            border-radius: 4px;
+            color: #b71c1c; /* Lebih gelap */
+            padding: 12px;
+            border-radius: var(--radius);
             background-color: #ffcdd2;
+            border: 1px solid #ef9a9a;
             font-weight: 700;
+            animation: pulse 1s infinite alternate;
         }
         .required-error { 
             color: #d32f2f; 
-            margin-bottom: 15px; 
+            margin-bottom: 20px; 
             font-weight: bold; 
             display: none; 
             text-align: center;
+            padding: 10px;
+            border: 1px dashed #d32f2f;
+            border-radius: 4px;
         }
 
         /* Animation Keyframes */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes pulse {
+            from { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.4); }
+            to { box-shadow: 0 0 0 8px rgba(244, 67, 54, 0); }
+        }
 
-        /* Responsiveness: Ensure stacking on small screens (mostly covered by max-width and padding) */
+        /* Media Query untuk Responsivitas */
         @media (max-width: 768px) {
-            body { padding: 10px; }
-            .container { padding: 20px; box-shadow: none; border-radius: 0; }
-            .btn { width: 100%; padding: 15px; } /* Full-width button on mobile */
-            .navigation { justify-content: center; }
+            body { 
+                padding: 0; /* Hapus padding body agar container menempel */
+                align-items: flex-start;
+            }
+            .container { 
+                padding: 20px 15px; 
+                box-shadow: none; 
+                border-radius: 0; 
+                min-height: 100vh; /* Agar mengisi seluruh layar */
+            }
+            .btn { 
+                width: 100%; 
+                padding: 15px; 
+            } 
+            .navigation { 
+                justify-content: center; 
+            }
+            .options label {
+                padding: 15px 12px;
+            }
         }
     </style>
 </head>
@@ -183,7 +237,7 @@
     </div>
 
     <div class="question-area" id="quiz-content">
-        </div>
+            </div>
 
     <div id="timer-message"></div>
 
@@ -193,13 +247,13 @@
 </div>
 
 <script>
-    // ⚠️ PASTIKAN URL WEB APP INI SUDAH DI-DEPLOY DENGAN AKSES 'Anyone'
+    // ⚠️ URL Web App yang sudah Anda sediakan
     const GOOGLE_SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwfwmvtrNJtqbVBDKo7a6jWI8QYSQCnSVltyoiKI7Ds9tQXur0fkwJMdO23XWlg5vF2Jg/exec'; 
     
     // --- Jeda Waktu Per Soal (10 detik) ---
     const JEDA_WAKTU = 10; 
 
-    // --- Database Soal (Jawaban Benar di 'answer' (Indeks A=0, B=1, dst)) ---
+    // --- Database Soal ---
     const questions = [
         // SOAL BAB 1 (Pilihan Ganda)
         { 
@@ -439,7 +493,7 @@
         sendToGoogleSheet();
     }
 
-    // 🌟 PERBAIKAN PENTING ADA DI FUNGSI INI 🌟
+    // Fungsi pengiriman data ke Apps Script (sama seperti sebelumnya)
     function sendToGoogleSheet() {
         const dataToSend = {
             timestamp: new Date().toLocaleString('id-ID'),
@@ -459,12 +513,8 @@
             method: 'POST',
             mode: 'no-cors', 
             cache: 'no-cache',
-            // Hapus atau jadikan komentar (COMMENT OUT) baris header JSON
-            // Karena mode 'no-cors' tidak mengizinkan header JSON diatur
-            // headers: { 'Content-Type': 'application/json' }, 
             body: JSON.stringify(dataToSend)
         })
-        // Perbaikan di bagian .then() agar lebih realistis karena 'no-cors'
         .then(() => console.log('Data telah dikirim ke Apps Script (Status tidak dapat dikonfirmasi karena no-cors).'))
         .catch(error => console.error('Gagal mengirim data:', error));
     }
