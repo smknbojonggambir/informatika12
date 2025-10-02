@@ -3,23 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ujian Informatika - Soal Per Soal dengan Jeda</title>
+    <title>Ujian Informatika - Soal Per Soal</title>
     <style>
-        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f4f4f9; margin: 0; }
-        .container { background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); width: 100%; max-width: 600px; }
-        .header { text-align: center; margin-bottom: 20px; }
-        .question-area { min-height: 250px; }
-        .options label { display: block; margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; }
-        .options label:hover { background-color: #f0f0f0; }
-        .options input[type="radio"]:checked + span { font-weight: bold; color: #0056b3; }
-        .options input[type="radio"], .options input[type="text"] { margin-right: 10px; }
-        .navigation { display: flex; justify-content: space-between; margin-top: 20px; }
-        .btn { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; }
-        .btn:hover:not(:disabled) { background-color: #0056b3; }
-        .btn:disabled { background-color: #ccc; cursor: not-allowed; }
-        #timer-message { text-align: center; margin-top: 20px; font-size: 1.1em; color: #dc3545; font-weight: bold; }
-        #essay-answer { width: 100%; height: 100px; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; resize: vertical; }
-        .required-error { color: #dc3545; margin-bottom: 15px; font-weight: bold; display: none; }
+        /* Modern Reset and Base Styles */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            background-color: #f0f4f8; /* Light blue/gray background */
+            margin: 0;
+            padding: 20px;
+        }
+        
+        /* Container modern look */
+        .container { 
+            background-color: #ffffff; 
+            padding: 25px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Softer, deeper shadow */
+            width: 100%; 
+            max-width: 700px; /* Increased max width for better desktop view */
+            box-sizing: border-box;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* Header Styling */
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .header h2 {
+            color: #1a237e; /* Deep blue header color */
+            margin-bottom: 5px;
+        }
+        #status {
+            font-size: 0.9em;
+            color: #607d8b;
+        }
+
+        /* Question Area */
+        .question-area { 
+            min-height: 200px; 
+            margin-bottom: 20px;
+        }
+        .question-area h4 {
+            color: #37474f; /* Dark text for question */
+            margin-top: 0;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        /* Options (Pilihan Ganda) Modern Card Style */
+        .options label { 
+            display: flex; /* Use flexbox for alignment */
+            align-items: center;
+            margin: 10px 0; 
+            padding: 15px; 
+            border: 1px solid #cfd8dc; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: all 0.2s ease; /* Smooth transition */
+            background-color: #fcfcfc;
+        }
+        .options label:hover { 
+            background-color: #e3f2fd; /* Light hover effect */
+            border-color: #90caf9;
+        }
+        .options input[type="radio"] { 
+            /* Hide default radio button */
+            position: absolute; 
+            opacity: 0; 
+            pointer-events: none;
+        }
+        /* Custom radio button appearance */
+        .options input[type="radio"] + span::before {
+            content: '';
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #90a4ae;
+            margin-right: 15px;
+            flex-shrink: 0;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+        .options input[type="radio"]:checked + span::before {
+            background-color: #1a237e;
+            border-color: #1a237e;
+        }
+        .options input[type="radio"]:checked + span { 
+            font-weight: 600; 
+            color: #1a237e;
+        }
+        
+        /* Input/Textarea Styling (Data Diri & Esai) */
+        input[type="text"], select, #essay-answer {
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 20px;
+            border: 1px solid #ccc; 
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        #essay-answer { 
+            height: 120px; 
+            resize: vertical; 
+        }
+
+        /* Navigation and Buttons */
+        .navigation { 
+            display: flex; 
+            justify-content: flex-end; /* Align button to the right */
+            margin-top: 30px; 
+        }
+        .btn { 
+            padding: 12px 30px; /* Larger padding for better mobile tap */
+            background-color: #3f51b5; /* Primary action color */
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: background-color 0.3s, transform 0.1s; 
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        .btn:hover:not(:disabled) { 
+            background-color: #303f9f; 
+        }
+        .btn:disabled { 
+            background-color: #b0bec5; 
+            cursor: not-allowed;
+        }
+
+        /* Timer/Error Messages */
+        #timer-message { 
+            text-align: center; 
+            margin-top: 15px; 
+            font-size: 1.2em; 
+            color: #d32f2f; /* Darker red for urgency */
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #ffcdd2;
+            font-weight: 700;
+        }
+        .required-error { 
+            color: #d32f2f; 
+            margin-bottom: 15px; 
+            font-weight: bold; 
+            display: none; 
+            text-align: center;
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsiveness: Ensure stacking on small screens (mostly covered by max-width and padding) */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .container { padding: 20px; box-shadow: none; border-radius: 0; }
+            .btn { width: 100%; padding: 15px; } /* Full-width button on mobile */
+            .navigation { justify-content: center; }
+        }
     </style>
 </head>
 <body>
@@ -141,10 +293,10 @@
                 <div class="required-error" id="data-error">Harap isi Nama Lengkap dan pilih Kelas Anda.</div>
                 <h3>Masukkan Data Diri</h3>
                 <label for="student-name">Nama Lengkap:</label>
-                <input type="text" id="student-name" style="width:100%; padding:8px; margin-bottom:15px;" required>
+                <input type="text" id="student-name" required>
 
                 <label for="student-class">Pilih Kelas:</label>
-                <select id="student-class" style="width:100%; padding:8px; margin-bottom:15px;" required>
+                <select id="student-class" required>
                     <option value="">-- Pilih Kelas --</option>
                     <option value="X DKV 1">X DKV 1</option>
                     <option value="X DKV 2">X DKV 2</option>
@@ -224,7 +376,7 @@
             if (essayText === '') return false; 
             
             studentAnswer = essayText;
-            scoreEarned = q.score; // Catat poin maksimum (Akan dinilai 0 di G-Sheet jika belum dinilai manual)
+            scoreEarned = q.score; 
             
             studentData.passingScore += q.score;
         }
@@ -237,7 +389,7 @@
             score_earned: scoreEarned 
         });
         
-        studentData.totalScore += scoreEarned; // Total skor PG saja
+        studentData.totalScore += scoreEarned; 
         return true;
     }
 
@@ -278,7 +430,7 @@
             <p>Terima kasih, <strong>${studentData.name}</strong> dari kelas <strong>${studentData.class}</strong>.</p>
             <p>Jawaban Anda telah direkam dan dikirim.</p>
             <p>Skor Pilihan Ganda (Otomatis): <strong>${studentData.totalScore} / ${studentData.passingScore - questions[questions.length-1].score}</strong></p>
-            <p style="color:#007bff; font-weight:bold;">Tunggu nilai akhir Anda setelah Esai dinilai manual.</p>
+            <p style="color:#1a237e; font-weight:bold;">Tunggu nilai akhir Anda setelah Esai dinilai manual.</p>
         `;
         navigation.style.display = 'none';
         status.textContent = 'Selesai';
@@ -292,8 +444,8 @@
             timestamp: new Date().toLocaleString('id-ID'),
             Nama_Lengkap: studentData.name,
             Kelas: studentData.class,
-            Score_PG: studentData.totalScore, // Skor yang dinilai otomatis
-            Score_Max: studentData.passingScore, // Total skor maksimum
+            Score_PG: studentData.totalScore, 
+            Score_Max: studentData.passingScore, 
             Raw_Answers: JSON.stringify(studentData.answers.map(a => ({
                 q: a.q_text, 
                 ans: a.student_answer, 
@@ -302,7 +454,6 @@
             })))
         };
 
-        // Ganti 'mode: no-cors' dengan 'mode: cors' jika Anda menggunakan proxy atau setting CORS khusus
         fetch(GOOGLE_SHEET_ENDPOINT, {
             method: 'POST',
             mode: 'no-cors', 
