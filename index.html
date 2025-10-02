@@ -89,7 +89,8 @@
     const JEDA_WAKTU = 10; // Detik
 
     // --- DAFTAR 20 SOAL LENGKAP (19 MC, 1 ESAI) ---
-    const questions = [
+    // Jawaban (answer) selalu merujuk pada index (0-4) di array 'options'
+    const originalQuestions = [
         { 
             type: 'mc', 
             text: 'Metode pengujian reliabilitas data dalam rangka memperoleh data yang valid merupakan fase untuk . . . .', 
@@ -341,14 +342,30 @@
         { 
             type: 'essay', 
             text: 'Jelaskan peran validitas eksternal dalam generalisasi data.', 
-            score: 10 // Skor Esai tetap 10
+            score: 10 // Skor Esai
         }
     ];
     // --- AKHIR DAFTAR 20 SOAL LENGKAP ---
 
+    let questions = [...originalQuestions]; // Buat salinan yang akan diacak
     let currentQuestionIndex = -1;
     let studentData = { name: '', class: '', answers: [], totalScore: 0, passingScore: 0 };
     let timerInterval;
+
+    /**
+     * Fungsi utility untuk mengacak array (Fisher-Yates shuffle).
+     * @param {Array} array 
+     */
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    // 1. Acak urutan soal di awal
+    shuffleArray(questions);
+
 
     function setErrorMessage(message) {
         const errorDiv = document.getElementById('error-message');
@@ -429,6 +446,7 @@
         if (currentQuestionIndex < questions.length) {
             const q = questions[currentQuestionIndex];
             status.textContent = `Soal ${currentQuestionIndex + 1} dari ${questions.length}`;
+            
             let htmlContent = `
                 <div class="p-4 bg-indigo-50 rounded-lg shadow-inner">
                     <h4 class="text-lg font-semibold text-gray-800">${currentQuestionIndex + 1}. ${q.text}</h4>
@@ -437,30 +455,44 @@
                 <div class="options space-y-3 mt-4">`;
 
             // Cari jawaban siswa yang sudah ada untuk soal ini
+            // Jawaban siswa disimpan sebagai ORIGINAL INDEX dari opsi yang dipilih
             const existingAnswer = studentData.answers.find(a => a.q_index === currentQuestionIndex);
-            const studentAnswerValue = existingAnswer ? existingAnswer.student_answer : null;
-
+            const studentAnswerOriginalIndex = existingAnswer ? existingAnswer.student_answer : null;
 
             if (q.type === 'mc') {
-                q.options.forEach((opt, i) => {
+                // 1. Siapkan opsi dengan indeks asli
+                const optionsWithIndex = q.options.map((text, index) => ({
+                    text: text,
+                    originalIndex: index
+                }));
+
+                // 2. Acak opsi untuk tampilan
+                shuffleArray(optionsWithIndex);
+                
+                // 3. Render opsi
+                optionsWithIndex.forEach((optData, i) => {
                     const labelId = `q${currentQuestionIndex}-opt${i}`;
-                    const letter = String.fromCharCode(65 + i); // 65 = 'A'
-                    // Karena ada soal yang opsi jawabannya hilang, cek apakah opsi ada
-                    const optionText = opt ? opt : 'Pilihan hilang'; 
-                    const isChecked = studentAnswerValue === i;
+                    const letter = String.fromCharCode(65 + i); // Display letters A, B, C...
+
+                    // Nilai radio button adalah index ASLI opsi tersebut di array 'options'
+                    const valueToStore = optData.originalIndex;
+                    
+                    // Cek apakah opsi yang sedang dirender adalah opsi yang sebelumnya dipilih siswa
+                    const isChecked = studentAnswerOriginalIndex !== null && studentAnswerOriginalIndex === valueToStore;
                     
                     htmlContent += `
                         <label for="${labelId}" class="option-radio block">
-                            <input type="radio" name="q${currentQuestionIndex}" id="${labelId}" value="${i}" ${isChecked ? 'checked' : ''}>
-                            <span><span class="font-mono text-indigo-700 mr-2">${letter}.</span> ${optionText}</span>
+                            <input type="radio" name="q${currentQuestionIndex}" id="${labelId}" value="${valueToStore}" ${isChecked ? 'checked' : ''}>
+                            <span><span class="font-mono text-indigo-700 mr-2">${letter}.</span> ${optData.text}</span>
                         </label>
                     `;
                 });
             } else if (q.type === 'essay') {
+                const essayText = studentAnswerOriginalIndex !== null ? studentAnswerOriginalIndex : '';
                 htmlContent += `
                     <textarea id="essay-answer" 
                             class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" 
-                            placeholder="Tulis jawaban esai Anda di sini...">${studentAnswerValue !== null ? studentAnswerValue : ''}</textarea>
+                            placeholder="Tulis jawaban esai Anda di sini...">${essayText}</textarea>
                 `;
             }
             
@@ -484,13 +516,14 @@
 
     function checkAnswer() {
         const q = questions[currentQuestionIndex];
-        let studentAnswer = null;
+        let studentAnswer = null; // Ini akan menyimpan ORIGINAL INDEX opsi PG atau teks Esai
         let answered = false;
         
         // Cek Jawaban PG
         if (q.type === 'mc') {
             const selected = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
             if (selected) {
+                // Nilai yang diambil adalah ORIGINAL INDEX dari opsi yang dipilih
                 studentAnswer = parseInt(selected.value);
                 answered = true;
             }
@@ -547,7 +580,7 @@
             // Update totalScore dengan menghapus skor lama
             studentData.totalScore -= existingScore;
 
-            // Hitung skor baru
+            // Hitung skor baru: studentAnswer adalah index ASLI opsi yang dipilih
             let newScoreEarned = 0;
             if (q.type === 'mc' && studentAnswer === q.answer) {
                 newScoreEarned = q.score;
@@ -555,9 +588,9 @@
             
             // Tambahkan jawaban baru
             studentData.answers.push({
-                q_index: currentQuestionIndex,
+                q_index: currentQuestionIndex, // Index soal di array yang sudah diacak
                 q_type: q.type,
-                student_answer: studentAnswer,
+                student_answer: studentAnswer, // Original Index (PG) atau Teks (Esai)
                 score_earned: newScoreEarned
             });
             
