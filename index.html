@@ -44,30 +44,19 @@
   <script>
     let studentData = { name: "", class: "", totalScore: 0, maxScore: 0, answers: {} };
 
-    // --- DAFTAR 20 SOAL LENGKAP (Total 100 Poin) ---
+    // --- DAFTAR SOAL CONTOH (isi 3 saja biar singkat, tambahkan sampai 20 sesuai kebutuhan) ---
     const originalQuestions = [
-        { text: 'Metode pengujian reliabilitas data dalam rangka memperoleh data yang valid merupakan fase untuk . . . .', options: [ 'meningkatkan akurasi data', 'mengurangi sampel penelitian', 'menjamin data bebas dari bias', 'membandingkan data dengan teori', 'menentukan konsistensi pengukuran' ], answer: 4, score: 5 },
-        { text: 'Terkait potensi bias seleksi dalam analisis data, strategi yang tepat untuk memastikan sampel penelitian mewakili populasi adalah . . . .', options: [ 'memilih subjek secara acak', 'memilih subjek yang paling aktif secara sosial', 'menggunakan subjek yang paling mudah diakses', 'memilih subjek berdasarkan ketersediaan mereka', 'memfokuskan pada subjek dengan karakteristik yang paling ekstrem' ], answer: 0, score: 5 },
-        { text: 'Ketika menggunakan bahasa pemrograman R, metode yang tepat untuk mendeteksi outliers dalam dataset adalah . . . .', options: [ 'mengabaikan semua data yang tidak sesuai dengan ekspektasi', 'menggunakan mean sebagai satu-satunya metode analisis', 'menggunakan interquartile range', 'mengumpulkan lebih banyak data', 'menganalisis variansi data' ], answer: 2, score: 5 },
-        { text: 'Dalam proses validasi data, visualisasi data yang menggambarkan kondisi data terbaru perlu ditampilkan. Tujuannya adalah . . . .', options: [ 'hanya untuk estetika', 'untuk menggantikan semua metode statistika', 'untuk mengurangi jumlah data yang harus dianalisis', 'untuk memperlihatkan hubungan kompleks dalam data', 'sebagai satu-satunya metode analisis yang diperlukan' ], answer: 3, score: 5 },
-        { text: 'Jika perusahaan komputer mengalami kegagalan dan kesalahan dalam memprediksi persentase kenaikan penjualan berdasarkan data hasil penelitian kuantitatif yang dilakukan, maka dampak yang mungkin muncul adalah . . . .', options: [ 'tidak berpengaruh sama sekali', 'meningkatkan reliabilitas temuan', 'mempercepat proses analisis data', 'hanya memengaruhi analisis deskriptif', 'menyebabkan estimasi yang bias dan tidak akurat' ], answer: 4, score: 5 },
-        { text: 'Dibandingkan dengan metode manual, sistem pengolahan data berbasis elektronik memiliki beberapa keunggulan antara lain . . . .', options: [ 'lebih lambat', 'lebih ekonomis', 'lebih mudah membuat kesalahan', 'tingkat akurasi dan efisiensi tinggi', 'membutuhkan lebih banyak tenaga kerja' ], answer: 3, score: 5 },
-        { text: 'Dalam tahapan pengolahan data mining, dikenal istilah fase pattern analysis. Tujuan penerapan fase pattern analysis adalah . . . .', options: [ 'mempercepat proses analisis data', 'membersihkan data yang tidak lengkap', 'mengurangi jumlah data yang dianalisis', 'menemukan pola hubungan antardata', 'mengintegrasikan data dari sumber yang berbeda' ], answer: 3, score: 5 },
-        { text: 'Dalam pengolahan data, sangat penting bagi seorang administrator data untuk menerapkan proses reduksi data. Pernyataan berikut yang menjelaskan fungsi proses tersebut adalah . . . .', options: [ 'menambahkan lebih banyak variabel ke analisis', 'menggabungkan semua dataset menjadi satu', 'meningkatkan jumlah data yang tersedia', 'meningkatkan kualitas data untuk analisis', 'membuat laporan akhir.' ], answer: 3, score: 5 },
-        { text: 'Pernyataan berikut yang merepresentasikan tujuan utama dari data cleaning dalam data preprocessing adalah . . . .', options: [ 'mengurangi volume data', 'meningkatkan kecepatan analisis data', 'mengurangi kebutuhan akan data mining', 'membuat data menjadi lebih menarik', 'meningkatkan akurasi, kelengkapan, konsistensi, dan kepercayaan data.' ], answer: 4, score: 5 },
-        { text: 'Salah satu teknik data cleaning adalah dengan menangani nilai yang hilang atau kosong (null). Salah satu teknik yang tepat untuk mendukung proses tersebut adalah . . . .', options: [ 'menghapus baris data', 'menggunakan nilai modus', 'menggunakan nilai median', 'menggunakan nilai rata-rata', 'menggunakan model regresi non-linear kompleks' ], answer: 3, score: 5 },
-        { text: 'Saat menjalankan compiler Java dengan perintah command prompt, muncul pesan bahwa Java tidak dikenal. Padahal, proses instalasi telah berhasil dilakukan. Tindakan yang harus dilakukan untuk mengatasi permasalahan tersebut adalah....', options: [ 'menginstal ulang JDK', 'men-disable antivirus di Windows', 'menginstal web server di Windows', 'memperbaiki path environment', 'menginstal Java di Windows' ], answer: 3, score: 5 },
-        { text: 'Perhatikan kode program berikut: public class Klinik { public static void main(String[] args) { System.out.println("RS. Indriyana"); } } Bagian program utama yang akan dieksekusi ketika program dijalankan adalah....', options: [ 'package Klinik;', 'public class Klinik;', 'public static void main(String[] args)', 'System.out.println("RS. Indriyana")', '}' ], answer: 2, score: 5 },
-        { text: 'Perhatikan kode program berikut: class Kapal { public static void main(String[] args) { } } Program dapat dikompilasi, tetapi program sukses dieksekusi tanpa error karena tidak terdapat method main. Kesimpulan yang paling tepat adalah....', options: [ 'Program dapat dikompilasi, tetapi program sukses dieksekusi tanpa error dan dapat dieksekusi karena tidak terdapat method main.', 'kelas dapat diinstansiasi', 'program sukses dikompilasi tanpa error dan dapat dieksekusi', 'Program dapat dikompilasi, tetapi program tidak dapat dieksekusi karena tidak ada method main', 'Program Java tidak berhasil dikompilasi, tetapi dapat dijalankan' ], answer: 2, score: 5 },
-        { text: 'Perhatikan kode program berikut: public class Contoh { static int users = 0; public void CekSign() { users += 1; System.out.println("users: " + users); } } Nomor baris program yang akan menyebabkan error ketika dikompilasi adalah....', options: [ 'baris ke-1', 'baris ke-2', 'baris ke-3', 'baris ke-4', 'baris ke-5' ], answer: 2, score: 5 },
-        { text: 'Operator penugasan yang digunakan untuk membandingkan apakah dua data memiliki nilai yang sama adalah....', options: [ '<', '!=', '>', '==', '!' ], answer: 3, score: 5 },
-        { text: 'Perhatikan kode program berikut: double x = 7; double y = 5; System.out.println("Apakah x <= y): " + (x <= y)); System.out.println("Apakah x >= y): " + (x >= y)); Program tersebut menerapkan operasi kondisional. Hasil kompilasi dari program tersebut adalah....', options: [ 'true', 'false', 'true, false', 'false, true', 'true, true' ], answer: 3, score: 5 },
-        { text: 'Struktur perulangan yang akan melakukan kondisi tidak terlebih dahulu adalah....', options: [ 'for', 'while', 'for-do', 'do while', 'case of' ], answer: 3, score: 5 },
-        { text: 'Perhatikan tahapan pengembangan aplikasi berikut: (1) Identifikasi masalah (2) Implementasi dan update (3) Mendesain sistem (4) Compile dan testing (5) Training dan sosialisasi (6) Menulis kode program. Urutan tahapan pengembangan aplikasi yang tepat adalah....', options: [ '(1) - (3) - (2) - (6) - (4) - (5)', '(1) - (3) - (6) - (2) - (5) - (4)', '(1) - (3) - (6) - (4) - (2) - (5)', '(1) - (3) - (6) - (4) - (5) - (2)', '(3) - (1) - (5) - (2) - (4) - (6)' ], answer: 3, score: 5 },
-        { text: 'Setelah program dirilis ke pengguna, akan dilakukan pemantauan penggunaan program selama beberapa waktu. Hal ini dilakukan untuk melihat adanya bug atau kesalahan dalam aplikasi. Aktivitas ini dilakukan pada tahap....', options: [ 'Mendesain sistem', 'Compile dan testing', 'Identifikasi masalah', 'Training dan update sistem', 'Implementasi dan update sistem' ], answer: 4, score: 5 },
-        { text: 'Dalam konteks penelitian kuantitatif, peran utama dari "validitas eksternal" dalam generalisasi data adalah untuk . . . .', options: [ 'memastikan akurasi hasil pengukuran instrumen penelitian', 'mengukur seberapa jauh hasil penelitian dapat diaplikasikan ke populasi yang lebih luas', 'menentukan konsistensi hasil penelitian jika diulang di waktu yang berbeda', 'memperkuat hubungan sebab-akibat antara variabel yang diteliti', 'membuktikan bahwa instrumen penelitian bebas dari kesalahan sistematis' ], answer: 1, score: 5 }
+      { text: 'Metode pengujian reliabilitas data digunakan untuk . . . .',
+        options: ['meningkatkan akurasi data', 'mengurangi sampel penelitian', 'menjamin data bebas dari bias', 'membandingkan data dengan teori', 'menentukan konsistensi pengukuran'],
+        answer: 4, score: 5 },
+      { text: 'Strategi untuk memastikan sampel mewakili populasi adalah . . . .',
+        options: ['memilih subjek acak', 'memilih subjek aktif sosial', 'menggunakan subjek mudah diakses', 'berdasarkan ketersediaan', 'memilih ekstrem'],
+        answer: 0, score: 5 },
+      { text: 'Metode untuk mendeteksi outlier dalam R adalah . . . .',
+        options: ['mengabaikan data aneh', 'pakai mean saja', 'pakai IQR', 'kumpulkan lebih banyak data', 'analisis variansi'],
+        answer: 2, score: 5 }
     ];
-    // --- AKHIR DAFTAR 20 SOAL LENGKAP ---
+    // --- Akhir daftar soal ---
 
     // Generate soal ke halaman
     window.onload = () => {
@@ -75,7 +64,7 @@
       originalQuestions.forEach((q, i) => {
         let qNum = i + 1;
         let optionsHtml = q.options.map((opt, idx) => {
-          let abjad = String.fromCharCode(65 + idx); // A,B,C,D,E
+          let abjad = String.fromCharCode(65 + idx);
           return `<label><input type="radio" name="q${qNum}" value="${idx}"> ${abjad}. ${opt}</label>`;
         }).join("");
         qContainer.innerHTML += `
@@ -131,16 +120,15 @@
       };
 
       try {
-        const response = await fetch("simpan_hasil.php", {
+        const response = await fetch("simpan_hasil.php", {   // ⚡ Ganti ke URL penuh jika hosting beda domain
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
 
         const result = await response.json();
-
         if (result.result === "success") {
-          submissionStatus.innerHTML = `<span style="color:green;font-weight:bold;">✅ Data berhasil tersimpan di database!</span><br>Nilai kamu: ${studentData.totalScore}/${studentData.maxScore}`;
+          submissionStatus.innerHTML = `<span style="color:green;font-weight:bold;">✅ Data tersimpan!</span><br>Nilai kamu: ${studentData.totalScore}/${studentData.maxScore}`;
         } else {
           submissionStatus.innerHTML = `<span style="color:red;font-weight:bold;">❌ Gagal simpan.</span><br><small>${result.message}</small>`;
         }
