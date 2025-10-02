@@ -4,24 +4,81 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ujian Informatika - Soal Per Soal</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Konfigurasi Tailwind untuk font Inter
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
   <style>
-    /* (CSS kamu tetap sama persis, saya tidak ubah) */
+    /* Custom CSS untuk styling elemen form yang spesifik */
+    .option-radio input[type="radio"] {
+      display: none;
+    }
+    .option-radio span {
+      display: block;
+      padding: 12px 16px;
+      border-radius: 0.5rem;
+      border: 2px solid #e5e7eb;
+      cursor: pointer;
+      transition: all 0.2s;
+      background-color: #f9fafb;
+    }
+    .option-radio input[type="radio"]:checked + span {
+      background-color: #eef2ff; /* Indigo-50 */
+      border-color: #6366f1; /* Indigo-500 */
+      color: #1e40af; /* Indigo-800 */
+      font-weight: 600;
+    }
+    .option-radio span:hover {
+      background-color: #f3f4f6;
+    }
+    textarea {
+      min-height: 150px;
+    }
+    /* Simple animation for loading state */
+    .loading-spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-left-color: #ffffff;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
-<body>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4 font-sans">
 
-<div class="container">
-  <div class="header">
-    <h2>Ujian Informatika - Bab 1 & 2</h2>
-    <div id="status"></div>
+<div class="bg-white shadow-2xl rounded-xl max-w-xl w-full p-6 sm:p-8 space-y-6">
+  <div class="header text-center space-y-2">
+    <h2 class="text-3xl font-extrabold text-indigo-700">Ujian Informatika</h2>
+    <p class="text-gray-500">Bab 1 & 2 - Pilihan Ganda dan Esai</p>
+    <div id="status" class="text-sm font-medium text-indigo-500">Siap Memulai.</div>
+    <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-sm" role="alert">
+        <span class="block sm:inline" id="error-text"></span>
+    </div>
   </div>
 
-  <div class="question-area" id="quiz-content"></div>
-  <div id="timer-message"></div>
+  <div class="question-area space-y-6" id="quiz-content">
+    <!-- Konten Kuis akan dirender di sini -->
+  </div>
+  
+  <div id="timer-message" class="text-center text-sm font-medium text-gray-600"></div>
 
-  <div class="navigation" id="quiz-navigation">
-    <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>
-      Mulai Ujian / Soal Berikutnya
+  <div class="navigation pt-4" id="quiz-navigation">
+    <button class="btn flex items-center justify-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white w-full py-3 px-4 rounded-lg font-bold transition duration-300 shadow-md hover:shadow-lg disabled:bg-indigo-400" id="next-btn" onclick="nextQuestion()">
+      <span>Mulai Ujian / Soal Berikutnya</span>
     </button>
   </div>
 </div>
@@ -29,7 +86,7 @@
 <script>
   // 🔗 Ganti dengan URL Web App kamu (yang /exec)
   const GOOGLE_SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbyh_oFss6YD67mU_9EaUH-J14JSwaz4OdSv26wnWsqj0_bMOPZ7nHKHD93N69_cktZ2/exec";
-  const JEDA_WAKTU = 10;
+  const JEDA_WAKTU = 10; // Detik
 
   const questions = [
     { type: 'mc', text: 'Metode pengujian reliabilitas data ...', options: ['meningkatkan akurasi data','mengurangi sampel penelitian','menjamin data bebas dari bias','membandingkan data dengan teori','menentukan konsistensi pengukuran'], answer: 4, score: 5 },
@@ -37,88 +94,124 @@
     { type: 'mc', text: 'Ketika menggunakan bahasa R ...', options: ['mengabaikan semua data','menggunakan mean','menggunakan interquartile range','mengumpulkan lebih banyak data','menganalisis variansi'], answer: 2, score: 5 },
     { type: 'mc', text: 'Pesan "Java tidak dikenal"...', options: ['instal ulang JDK','disable antivirus','instal web server','perbaiki path environment','instal Java'], answer: 3, score: 5 },
     { type: 'mc', text: 'Operator untuk membandingkan sama dengan ...', options: ['<','!=','>','==','!'], answer: 3, score: 5 },
-    { type: 'essay', text: 'Jelaskan peran validitas eksternal dalam generalisasi data.', score: 10 }
+    // Soal Esai memiliki score, tapi tidak dihitung di Score_PG. Akan dihitung di Score_Max.
+    { type: 'essay', text: 'Jelaskan peran validitas eksternal dalam generalisasi data.', score: 10 } 
   ];
 
   let currentQuestionIndex = -1;
   let studentData = { name: '', class: '', answers: [], totalScore: 0, passingScore: 0 };
   let timerInterval;
 
+  function setErrorMessage(message) {
+    const errorDiv = document.getElementById('error-message');
+    const errorText = document.getElementById('error-text');
+    
+    if (message) {
+      errorText.textContent = message;
+      errorDiv.classList.remove('hidden');
+    } else {
+      errorDiv.classList.add('hidden');
+      errorText.textContent = '';
+    }
+  }
+
   function startTimer() {
     let timeLeft = JEDA_WAKTU;
     const timerMsg = document.getElementById('timer-message');
     const nextBtn = document.getElementById('next-btn');
-
+    const nextBtnText = nextBtn.querySelector('span');
+    
+    // Nonaktifkan tombol dan tampilkan pesan tunggu
     nextBtn.disabled = true;
-    nextBtn.textContent = `Tunggu ${timeLeft} detik...`;
-    timerMsg.textContent = `⏳ Soal berikutnya dalam ${timeLeft} detik...`;
+    nextBtnText.textContent = `Tunggu ${timeLeft} detik...`;
+    timerMsg.textContent = `⏳ Soal berikutnya akan terbuka dalam ${timeLeft} detik...`;
 
+    clearInterval(timerInterval); // Bersihkan interval lama jika ada
     timerInterval = setInterval(() => {
       timeLeft--;
       if (timeLeft > 0) {
-        nextBtn.textContent = `Tunggu ${timeLeft} detik...`;
+        nextBtnText.textContent = `Tunggu ${timeLeft} detik...`;
+        timerMsg.textContent = `⏳ Soal berikutnya akan terbuka dalam ${timeLeft} detik...`;
       } else {
         clearInterval(timerInterval);
-        timerMsg.textContent = 'Silakan lanjut.';
+        timerMsg.textContent = 'Silakan jawab dan lanjut!';
         nextBtn.disabled = false;
-        nextBtn.textContent = (currentQuestionIndex === questions.length - 1) ? 'Kirim Jawaban' : 'Soal Berikutnya';
+        nextBtnText.textContent = (currentQuestionIndex === questions.length - 1) ? 'Kirim Jawaban' : 'Soal Berikutnya';
       }
     }, 1000);
   }
 
   function renderQuestion() {
+    setErrorMessage('');
     const contentArea = document.getElementById('quiz-content');
     const status = document.getElementById('status');
     const nextBtn = document.getElementById('next-btn');
+    const nextBtnText = nextBtn.querySelector('span');
+    document.getElementById('timer-message').textContent = '';
 
+    // Tampilan Awal: Input Data Diri
     if (currentQuestionIndex < 0) {
       contentArea.innerHTML = `
-        <div class="required-error" id="data-error">Isi Nama & Kelas dulu.</div>
-        <h3>Data Diri</h3>
-        <label>Nama Lengkap:</label>
-        <input type="text" id="student-name">
-        <label>Kelas:</label>
-        <select id="student-class">
-          <option value="">-- Pilih Kelas --</option>
-          <option value="X DKV 1">X DKV 1</option>
-          <option value="X DKV 2">X DKV 2</option>
-          <option value="X APHP">X APHP</option>
-        </select>
+        <div class="space-y-4">
+            <h3 class="text-xl font-semibold text-gray-700 border-b pb-2">Data Diri Peserta</h3>
+            <label class="block text-sm font-medium text-gray-700">Nama Lengkap:</label>
+            <input type="text" id="student-name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" placeholder="Masukkan Nama Lengkap Anda">
+            
+            <label class="block text-sm font-medium text-gray-700">Kelas:</label>
+            <select id="student-class" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+              <option value="">-- Pilih Kelas --</option>
+              <option value="X DKV 1">X DKV 1</option>
+              <option value="X DKV 2">X DKV 2</option>
+              <option value="X APHP">X APHP</option>
+            </select>
+        </div>
       `;
-      nextBtn.textContent = 'Mulai Ujian';
+      nextBtnText.textContent = 'Mulai Ujian';
       nextBtn.disabled = false;
-      status.textContent = 'Siap Memulai.';
-      document.getElementById('timer-message').textContent = '';
+      status.textContent = 'Mohon isi data diri untuk memulai.';
       return;
     }
 
+    // Tampilan Soal
     if (currentQuestionIndex < questions.length) {
       const q = questions[currentQuestionIndex];
       status.textContent = `Soal ${currentQuestionIndex + 1} dari ${questions.length}`;
-      let htmlContent = `<h4>${currentQuestionIndex + 1}. ${q.text} (${q.score} Poin)</h4>`;
+      let htmlContent = `
+        <div class="p-4 bg-indigo-50 rounded-lg shadow-inner">
+            <h4 class="text-lg font-semibold text-gray-800">${currentQuestionIndex + 1}. ${q.text}</h4>
+            <p class="text-sm text-indigo-600 mt-1">${q.score} Poin</p>
+        </div>
+        <div class="options space-y-3 mt-4">`;
 
       if (q.type === 'mc') {
-        htmlContent += '<div class="options">';
         q.options.forEach((opt, i) => {
           const labelId = `q${currentQuestionIndex}-opt${i}`;
-          const letter = String.fromCharCode(65 + i);
+          const letter = String.fromCharCode(65 + i); // 65 = 'A'
           htmlContent += `
-            <label for="${labelId}">
+            <label for="${labelId}" class="option-radio block">
               <input type="radio" name="q${currentQuestionIndex}" id="${labelId}" value="${i}">
-              <span>${letter}. ${opt}</span>
+              <span><span class="font-mono text-indigo-700 mr-2">${letter}.</span> ${opt}</span>
             </label>
           `;
         });
-        htmlContent += '</div>';
       } else if (q.type === 'essay') {
-        htmlContent += `<textarea id="essay-answer" placeholder="Tulis jawaban..."></textarea>`;
+        htmlContent += `
+          <textarea id="essay-answer" 
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" 
+                    placeholder="Tulis jawaban esai Anda di sini..."></textarea>
+        `;
       }
-
+      
+      htmlContent += '</div>';
       contentArea.innerHTML = htmlContent;
-      nextBtn.textContent = (currentQuestionIndex === questions.length - 1) ? 'Kirim Jawaban' : 'Soal Berikutnya';
+      
+      nextBtnText.textContent = (currentQuestionIndex === questions.length - 1) ? 'Kirim Jawaban' : 'Soal Berikutnya';
 
-      if (currentQuestionIndex > 0) startTimer();
-      else {
+      // Mulai timer setelah soal pertama
+      if (currentQuestionIndex > 0) {
+        startTimer();
+      } else {
+        // Soal pertama tidak perlu timer
         nextBtn.disabled = false;
         document.getElementById('timer-message').textContent = 'Selamat Mengerjakan!';
       }
@@ -131,37 +224,53 @@
     const q = questions[currentQuestionIndex];
     let studentAnswer = null;
     let scoreEarned = 0;
+    let answered = false;
+    
+    // Perhitungan skor maksimal yang mungkin (hanya PG yang bisa dihitung otomatis)
+    // Esai dihitung sebagai skor max di sheet, tapi tidak dihitung ke totalScore otomatis
+    studentData.passingScore += q.score;
 
     if (q.type === 'mc') {
       const selected = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
-      if (!selected) return false;
-      studentAnswer = parseInt(selected.value);
-      scoreEarned = (studentAnswer === q.answer) ? q.score : 0;
-      studentData.passingScore += q.score;
+      if (selected) {
+        studentAnswer = parseInt(selected.value);
+        scoreEarned = (studentAnswer === q.answer) ? q.score : 0;
+        answered = true;
+      }
     } else if (q.type === 'essay') {
       const essayText = document.getElementById('essay-answer').value.trim();
-      if (essayText === '') return false;
-      studentAnswer = essayText;
-      scoreEarned = q.score;
-      studentData.passingScore += q.score;
+      if (essayText !== '') {
+        studentAnswer = essayText;
+        // Skor PG (Score_PG) HANYA untuk PG. Esai diberi skor penuh (untuk perhitungan maksimal di Sheet)
+        // namun totalScore untuk PG tidak bertambah.
+        scoreEarned = 0; // Skor esai otomatis 0 karena perlu koreksi manual
+        answered = true;
+      }
     }
 
-    studentData.answers.push({
-      q_index: currentQuestionIndex,
-      q_type: q.type,
-      student_answer: studentAnswer,
-      score_earned: scoreEarned
-    });
-    studentData.totalScore += scoreEarned;
-    return true;
+    if (answered) {
+        studentData.answers.push({
+            q_index: currentQuestionIndex,
+            q_type: q.type,
+            student_answer: studentAnswer,
+            score_earned: scoreEarned // Score_earned untuk PG adalah skor mentah, untuk Esai adalah 0
+        });
+        studentData.totalScore += scoreEarned; // Hanya PG yang menambah totalScore
+        return true;
+    }
+
+    return false; // Belum dijawab
   }
 
   function nextQuestion() {
+    clearInterval(timerInterval); // Hentikan timer saat tombol diklik
+
+    // Langkah 1: Input Data Diri
     if (currentQuestionIndex === -1) {
       const nameInput = document.getElementById('student-name').value.trim();
       const classSelect = document.getElementById('student-class').value;
       if (nameInput === '' || classSelect === '') {
-        document.getElementById('data-error').style.display = 'block';
+        setErrorMessage('⚠️ Harap isi Nama Lengkap dan pilih Kelas terlebih dahulu.');
         return;
       }
       studentData.name = nameInput;
@@ -171,11 +280,12 @@
       return;
     }
 
+    // Langkah 2: Menjawab Soal (untuk soal > 0)
     if (checkAnswer()) {
       currentQuestionIndex++;
       renderQuestion();
     } else {
-      alert('Harap jawab soal sebelum lanjut!');
+      setErrorMessage('⚠️ Harap jawab soal sebelum lanjut ke pertanyaan berikutnya.');
     }
   }
 
@@ -185,10 +295,15 @@
     const status = document.getElementById('status');
 
     contentArea.innerHTML = `
-      <h3>Ujian Selesai 🎉</h3>
-      <p>Terima kasih, <b>${studentData.name}</b> (${studentData.class}).</p>
-      <p>Skor Otomatis: <b>${studentData.totalScore}</b> dari <b>${studentData.passingScore - questions[questions.length-1].score}</b></p>
-      <p>Nilai akhir menunggu koreksi esai.</p>
+      <div class="text-center p-8 bg-green-50 rounded-lg border border-green-200">
+          <h3 class="text-2xl font-bold text-green-700 mb-2">Ujian Selesai 🎉</h3>
+          <p class="text-gray-600">Terima kasih, <b>${studentData.name}</b> (${studentData.class}).</p>
+          <p class="mt-4 text-lg font-semibold text-gray-800">
+            Skor Pilihan Ganda Otomatis: <b>${studentData.totalScore}</b> / <b>${studentData.passingScore - questions.find(q => q.type === 'essay').score}</b>
+          </p>
+          <p class="text-sm text-red-600 font-medium">Nilai Akhir akan tersedia setelah koreksi Esai dilakukan.</p>
+          <div id="submission-status" class="mt-4 text-indigo-500 font-medium">Sedang mengirim data...</div>
+      </div>
     `;
     navigation.style.display = 'none';
     status.textContent = 'Selesai';
@@ -196,26 +311,46 @@
   }
 
   // 🔗 Kirim data ke Google Sheet
-  function sendToGoogleSheet() {
+  async function sendToGoogleSheet() {
+    const submissionStatus = document.getElementById('submission-status');
+    submissionStatus.innerHTML = '<div class="flex items-center justify-center space-x-2"><div class="loading-spinner"></div><span>Sedang mengirim data...</span></div>';
+
     const payload = {
       timestamp: new Date().toLocaleString("id-ID"),
       Nama_Lengkap: studentData.name,
       Kelas: studentData.class,
-      Score_PG: studentData.totalScore,
-      Score_Max: studentData.passingScore,
+      Score_PG: studentData.totalScore, // Hanya skor PG
+      Score_Max: studentData.passingScore, // Total skor maksimum (PG + Esai)
       Raw_Answers: JSON.stringify(studentData.answers)
     };
+    
+    try {
+      const response = await fetch(GOOGLE_SHEET_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
 
-    fetch(GOOGLE_SHEET_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    })
-    .then(res => res.json())
-    .then(res => console.log("✅ Data terkirim:", res))
-    .catch(err => console.error("❌ Error:", err));
+      const res = await response.json();
+
+      if (res.result === "success") {
+        submissionStatus.className = "mt-4 text-green-600 font-bold";
+        submissionStatus.textContent = "Data Berhasil Terkirim ke Google Sheet!";
+        console.log("✅ Data terkirim:", res);
+      } else {
+        submissionStatus.className = "mt-4 text-red-600 font-bold";
+        submissionStatus.textContent = "Data GAGAL Terkirim. Cek konsol log untuk detail.";
+        console.error("❌ Error dari Server:", res.message);
+      }
+      
+    } catch (err) {
+      submissionStatus.className = "mt-4 text-red-600 font-bold";
+      submissionStatus.textContent = "Data GAGAL Terkirim. Ada masalah koneksi/endpoint.";
+      console.error("❌ Error saat Fetch:", err);
+    }
   }
 
+  // Inisiasi
   renderQuestion();
 </script>
 </body>
