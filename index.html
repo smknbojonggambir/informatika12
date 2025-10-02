@@ -1,141 +1,1361 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ujian Informatika - 20 Soal</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 0; }
-    .container { max-width: 900px; margin: 30px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-    h1 { text-align: center; color: #3f51b5; }
-    .question { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; }
-    .question h3 { margin: 0 0 10px 0; }
-    .options label { display: block; margin: 5px 0; }
-    button { padding: 10px 20px; border: none; background: #3f51b5; color: white; border-radius: 8px; cursor: pointer; font-size: 16px; }
-    button:hover { background: #283593; }
-    #submission-status { margin-top: 15px; text-align: center; font-size: 1.1em; }
-    .loading-spinner { border: 3px solid #f3f3f3; border-top: 3px solid #3f51b5; border-radius: 50%; width: 18px; height: 18px; animation: spin 1s linear infinite; display: inline-block; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>20 Soal Pilihan Ganda - Pengolahan Data</title>
+    <style>
+        body {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Student Form Styles */
+        .student-form {
+            padding: 40px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .student-form h2 {
+            margin: 0 0 30px 0;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+        }
+
+        /* Quiz Interface Styles */
+        .quiz-header {
+            padding: 20px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .student-info {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .quiz-progress {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #4facfe;
+            transition: width 0.3s ease;
+            width: 5%;
+        }
+
+        .question-container {
+            padding: 40px;
+        }
+
+        .question-number {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #4facfe;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .option-item {
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option-item:hover {
+            border-color: #4facfe;
+            background: #f8f9ff;
+        }
+
+        .option-item.selected {
+            border-color: #4facfe;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .option-letter {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .option-item.selected .option-letter {
+            background: white;
+            color: #4facfe;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .navigation button {
+            padding: 12px 25px;
+            border: 2px solid #4facfe;
+            background: white;
+            color: #4facfe;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .navigation button:hover:not(:disabled) {
+            background: #4facfe;
+            color: white;
+        }
+
+        .navigation button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #finishBtn {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            color: white;
+            border: none;
+        }
+
+        /* Results Styles */
+        .results-header {
+            padding: 40px;
+            text-align: center;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .score-display {
+            margin-top: 20px;
+        }
+
+        .score-circle {
+            display: inline-block;
+            width: 120px;
+            height: 120px;
+            border: 4px solid white;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .results-details {
+            padding: 30px 40px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 1.1rem;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .restart-btn {
+            margin: 20px 40px 40px;
+            width: calc(100% - 80px);
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Admin Panel Styles */
+        .admin-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 1000;
+            min-width: 300px;
+            max-width: 90vw;
+        }
+
+        .admin-header {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toggle-admin {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .stat-card h4 {
+            margin: 0 0 10px 0;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .stat-card span {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .download-btn {
+            margin: 0 20px 20px;
+            width: calc(100% - 40px);
+            padding: 12px;
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .results-table {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 0 20px 20px;
+        }
+
+        .results-table table {
+            width: 100%;
+            font-size: 12px;
+        }
+
+        .results-table th {
+            padding: 8px 5px;
+            font-size: 11px;
+        }
+
+        .results-table td {
+            padding: 8px 5px;
+        }
+
+        .controls {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid #4facfe;
+            background: white;
+            color: #4facfe;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #4facfe;
+            color: white;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            max-height: 70vh;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th:first-child {
+            width: 50px;
+            text-align: center;
+        }
+
+        th:nth-child(2) {
+            width: 35%;
+        }
+
+        th:nth-child(3), th:nth-child(4), th:nth-child(5), th:nth-child(6), th:nth-child(7) {
+            width: 10%;
+        }
+
+        th:nth-child(8) {
+            width: 80px;
+            text-align: center;
+        }
+
+        th:nth-child(9) {
+            width: 60px;
+            text-align: center;
+        }
+
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: top;
+            line-height: 1.4;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .question-text {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .option {
+            padding: 3px 0;
+            color: #495057;
+        }
+
+        .correct-answer {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-align: center;
+            display: inline-block;
+            min-width: 25px;
+        }
+
+        .score {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        .stats {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .stat-number {
+            background: #4facfe;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                min-width: auto;
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 8px 6px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Ujian Informatika - 20 Soal</h1>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Bank Soal Pengolahan Data</h1>
+            <p>20 Soal Pilihan Ganda tentang Data Processing & Programming</p>
+        </div>
 
-    <!-- Identitas -->
-    <div id="student-info">
-      <label>Nama Lengkap:</label>
-      <input type="text" id="nama" placeholder="Isi nama lengkap"><br><br>
-      <label>Kelas:</label>
-      <input type="text" id="kelas" placeholder="Isi kelas"><br><br>
-      <button onclick="startQuiz()">Mulai Ujian</button>
+        <!-- Student Info Form -->
+        <div id="studentForm" class="student-form">
+            <h2>📝 Data Siswa</h2>
+            <div class="form-group">
+                <label for="studentName">Nama Lengkap:</label>
+                <input type="text" id="studentName" placeholder="Masukkan nama lengkap Anda" required>
+            </div>
+            <div class="form-group">
+                <label for="studentClass">Kelas:</label>
+                <select id="studentClass" required>
+                    <option value="">Pilih Kelas</option>
+                    <option value="X DKV 1">X DKV 1</option>
+                    <option value="X DKV 2">X DKV 2</option>
+                    <option value="X APHP">X APHP</option>
+                </select>
+            </div>
+            <button onclick="startQuiz()" class="start-btn">Mulai Mengerjakan Soal</button>
+        </div>
+
+        <!-- Quiz Interface -->
+        <div id="quizInterface" style="display: none;">
+            <div class="quiz-header">
+                <div class="student-info">
+                    <span id="displayName"></span> - <span id="displayClass"></span>
+                </div>
+                <div class="quiz-progress">
+                    <span>Soal <span id="currentQuestion">1</span> dari 20</span>
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-container">
+                <div class="question-number">Soal <span id="questionNumber">1</span></div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="optionsContainer"></div>
+                <div class="navigation">
+                    <button id="prevBtn" onclick="previousQuestion()" disabled>← Sebelumnya</button>
+                    <button id="nextBtn" onclick="nextQuestion()">Selanjutnya →</button>
+                    <button id="finishBtn" onclick="finishQuiz()" style="display: none;">Selesai</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div id="resultsSection" style="display: none;">
+            <div class="results-header">
+                <h2>🎉 Hasil Ujian</h2>
+                <div class="score-display">
+                    <div class="score-circle">
+                        <span id="finalScore">0</span>
+                        <small>/ 100</small>
+                    </div>
+                </div>
+            </div>
+            <div class="results-details">
+                <div class="result-item">
+                    <span>Nama:</span>
+                    <span id="resultName"></span>
+                </div>
+                <div class="result-item">
+                    <span>Kelas:</span>
+                    <span id="resultClass"></span>
+                </div>
+                <div class="result-item">
+                    <span>Jawaban Benar:</span>
+                    <span id="correctAnswers">0</span>
+                </div>
+                <div class="result-item">
+                    <span>Jawaban Salah:</span>
+                    <span id="wrongAnswers">0</span>
+                </div>
+                <div class="result-item">
+                    <span>Waktu Selesai:</span>
+                    <span id="completionTime"></span>
+                </div>
+            </div>
+            <button onclick="restartQuiz()" class="restart-btn">Kerjakan Lagi</button>
+        </div>
+
+        <!-- Admin Panel -->
+        <div id="adminPanel" class="admin-panel" style="display: none;">
+            <div class="admin-header">
+                <h3>👨‍💼 Panel Admin</h3>
+                <button onclick="toggleAdmin()" class="toggle-admin">Admin</button>
+            </div>
+            <div id="adminContent" style="display: none;">
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <h4>Total Peserta</h4>
+                        <span id="totalParticipants">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Rata-rata Nilai</h4>
+                        <span id="averageScore">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Nilai Tertinggi</h4>
+                        <span id="highestScore">0</span>
+                    </div>
+                </div>
+                <button onclick="downloadResults()" class="download-btn">📥 Unduh Rekap Hasil</button>
+                <button onclick="exportBackup()" class="download-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin-top: 10px;">💾 Backup Data</button>
+                <button onclick="importBackup()" class="download-btn" style="background: linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%); margin-top: 10px;">📂 Import Backup</button>
+                <input type="file" id="backupFile" accept=".json" style="display: none;" onchange="handleBackupImport(event)">
+                <div class="results-table">
+                    <table id="resultsTable">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama</th>
+                                <th>Kelas</th>
+                                <th>Nilai</th>
+                                <th>Benar</th>
+                                <th>Salah</th>
+                                <th>Waktu Selesai</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 
-    <!-- Soal Ujian -->
-    <form id="quiz-form" style="display:none;">
-      <div id="questions"></div>
-      <button type="button" onclick="finishQuiz()">Selesai</button>
-    </form>
+    <script>
+        const questions = [
+            {
+                no: 1,
+                question: "Metode pengujian reliabilitas data dalam rangka memperoleh data yang valid merupakan fase untuk...",
+                optionA: "meningkatkan akurasi data",
+                optionB: "mengurangi sampel penelitian",
+                optionC: "menjamin data bebas dari bias",
+                optionD: "membandingkan data dengan teori",
+                optionE: "menentukan konsistensi pengukuran",
+                correct: "E",
+                score: 5,
+                category: "data"
+            },
+            {
+                no: 2,
+                question: "Terkait potensi bias seleksi dalam analisis data, strategi yang tepat untuk memastikan sampel penelitian mewakili populasi adalah...",
+                optionA: "memilih subjek secara acak",
+                optionB: "memilih subjek yang paling aktif secara sosial",
+                optionC: "menggunakan subjek yang paling mudah diakses",
+                optionD: "memilih subjek berdasarkan ketersediaan mereka",
+                optionE: "memfokuskan pada subjek dengan karakteristik yang paling ekstrem",
+                correct: "A",
+                score: 5,
+                category: "data"
+            },
+            {
+                no: 3,
+                question: "Ketika menggunakan bahasa pemrograman R, metode yang tepat untuk mendeteksi outliers dalam dataset adalah...",
+                optionA: "mengabaikan semua data yang tidak sesuai dengan ekspektasi",
+                optionB: "menggunakan mean sebagai satu-satunya metode analisis",
+                optionC: "menggunakan interquartile range",
+                optionD: "mengumpulkan lebih banyak data",
+                optionE: "menganalisis variansi data",
+                correct: "C",
+                score: 5,
+                category: "programming"
+            },
+            {
+                no: 4,
+                question: "Dalam proses validasi data, visualisasi data yang menggambarkan kondisi data terbaru perlu ditampilkan. Tujuannya adalah...",
+                optionA: "hanya untuk estetika",
+                optionB: "untuk menggantikan semua metode statistika",
+                optionC: "untuk mengurangi jumlah data yang harus dianalisis",
+                optionD: "untuk memperlihatkan hubungan kompleks dalam data",
+                optionE: "sebagai satu-satunya metode analisis yang diperlukan",
+                correct: "D",
+                score: 5,
+                category: "data"
+            },
+            {
+                no: 5,
+                question: "Jika perusahaan komputer mengalami kegagalan dan kesalahan dalam memprediksi persentase kenaikan penjualan berdasarkan data hasil penelitian kuantitatif yang dilakukan, maka dampak yang mungkin muncul adalah...",
+                optionA: "tidak berpengaruh sama sekali",
+                optionB: "meningkatkan reliabilitas temuan",
+                optionC: "mempercepat proses analisis data",
+                optionD: "hanya memengaruhi analisis deskriptif",
+                optionE: "menyebabkan estimasi yang bias dan tidak akurat",
+                correct: "E",
+                score: 5,
+                category: "data"
+            },
+            {
+                no: 6,
+                question: "Dibandingkan dengan metode manual, sistem pengolahan data berbasis elektronik memiliki beberapa keunggulan antara lain...",
+                optionA: "lebih lambat",
+                optionB: "lebih ekonomis",
+                optionC: "lebih mudah membuat kesalahan",
+                optionD: "tingkat akurasi dan efisiensi tinggi",
+                optionE: "membutuhkan lebih banyak tenaga kerja",
+                correct: "D",
+                score: 5,
+                category: "data"
+            },
+            {
+                no: 7,
+                question: "Dalam tahapan pengolahan data mining, dikenal istilah fase pattern analysis. Tujuan penerapan fase pattern analysis adalah...",
+                optionA: "mempercepat proses analisis data",
+                optionB: "membersihkan data yang tidak lengkap",
+                optionC: "mengurangi jumlah data yang dianalisis",
+                optionD: "menemukan pola hubungan antardata",
+                optionE: "mengintegrasikan data dari sumber yang berbeda",
+                correct: "D",
+                score: 5,
+                category: "data"
+            },
+            {
+                no: 8,
+                question: "Dalam pengolahan data, sangat penting bagi seorang administrator data untuk menerapkan proses reduksi data. Pernyataan berikut yang menjelaskan fungsi proses tersebut adalah...",
+                optionA: "menambahkan lebih banyak variabel ke analisis",
+                optionB: "menggabungkan semua dataset menjadi satu",
+                optionC: "meningkatkan jumlah data yang tersedia",
+                optionD: "meningkatkan kualitas data untuk analisis",
+                optionE: "membuat laporan akhir",
+                correct: "D",
+                score: 5,
+                category: "data"
+            },
+            {
+                no: 9,
+                question: "Pernyataan berikut yang merepresentasikan tujuan utama dari data cleaning dalam data preprocessing adalah...",
+                optionA: "mengurangi volume data",
+                optionB: "meningkatkan kecepatan analisis data",
+                optionC: "mengurangi kebutuhan akan data mining",
+                optionD: "membuat data menjadi lebih menarik",
+                optionE: "meningkatkan akurasi, kelengkapan, konsistensi, dan kepercayaan data",
+                correct: "E",
+                score: 5,
+                category: "data"
+            },
+            {
+                no: 10,
+                question: "Salah satu teknik data cleaning adalah dengan menangani nilai yang hilang atau kosong (null). Salah satu teknik yang tepat untuk mendukung proses tersebut adalah...",
+                optionA: "menghapus baris data",
+                optionB: "menggunakan nilai modus",
+                optionC: "menggunakan nilai median",
+                optionD: "menggunakan nilai rata-rata",
+                optionE: "menggunakan model regresi non-linear kompleks",
+                correct: "D",
+                score: 5,
+                category: "data"
+            },
+            {
+                no: 11,
+                question: "Saat menjalankan compiler Java dengan perintah command prompt, muncul pesan bahwa Java tidak dikenal. Padahal, proses instalasi telah berhasil dilakukan. Tindakan yang harus dilakukan adalah...",
+                optionA: "menginstal ulang Java",
+                optionB: "mengatur PATH environment variable",
+                optionC: "mengganti versi Java",
+                optionD: "menggunakan IDE yang berbeda",
+                optionE: "restart komputer",
+                correct: "B",
+                score: 5,
+                category: "programming"
+            },
+            {
+                no: 12,
+                question: "Dalam pemrograman Python, library yang paling umum digunakan untuk manipulasi dan analisis data adalah...",
+                optionA: "NumPy",
+                optionB: "Matplotlib",
+                optionC: "Pandas",
+                optionD: "Scikit-learn",
+                optionE: "TensorFlow",
+                correct: "C",
+                score: 5,
+                category: "programming"
+            },
+            {
+                no: 13,
+                question: "Metode normalisasi data yang mengubah nilai data ke dalam rentang 0-1 disebut...",
+                optionA: "Z-score normalization",
+                optionB: "Min-max normalization",
+                optionC: "Decimal scaling",
+                optionD: "Log transformation",
+                optionE: "Square root transformation",
+                correct: "B",
+                score: 5,
+                category: "data"
+            },
+            {
+                no: 14,
+                question: "Dalam database, operasi JOIN yang mengembalikan semua record dari tabel kiri dan record yang cocok dari tabel kanan disebut...",
+                optionA: "INNER JOIN",
+                optionB: "RIGHT JOIN",
+                optionC: "LEFT JOIN",
+                optionD: "FULL OUTER JOIN",
+                optionE: "CROSS JOIN",
+                correct: "C",
+                score: 5,
+                category: "programming"
+            },
+            {
+                no: 15,
+                question: "Algoritma machine learning yang digunakan untuk masalah klasifikasi dan dapat menangani data kategorikal maupun numerik adalah...",
+                optionA: "Linear Regression",
+                optionB: "K-Means Clustering",
+                optionC: "Decision Tree",
+                optionD: "Principal Component Analysis",
+                optionE: "Association Rules",
+                correct: "C",
+                score: 5,
+                category: "data"
+            },
+            {
+                no: 16,
+                question: "Dalam pengembangan aplikasi web, framework JavaScript yang menggunakan konsep Virtual DOM adalah...",
+                optionA: "Angular",
+                optionB: "Vue.js",
+                optionC: "React",
+                optionD: "jQuery",
+                optionE: "Bootstrap",
+                correct: "C",
+                score: 5,
+                category: "programming"
+            },
+            {
+                no: 17,
+                question: "Teknik sampling yang memberikan setiap anggota populasi kesempatan yang sama untuk dipilih disebut...",
+                optionA: "Stratified sampling",
+                optionB: "Cluster sampling",
+                optionC: "Systematic sampling",
+                optionD: "Simple random sampling",
+                optionE: "Convenience sampling",
+                correct: "D",
+                score: 5,
+                category: "data"
+            },
+            {
+                no: 18,
+                question: "Dalam Git version control, perintah yang digunakan untuk menggabungkan perubahan dari branch lain ke branch saat ini adalah...",
+                optionA: "git pull",
+                optionB: "git merge",
+                optionC: "git push",
+                optionD: "git commit",
+                optionE: "git clone",
+                correct: "B",
+                score: 5,
+                category: "programming"
+            },
+            {
+                no: 19,
+                question: "Metrik evaluasi yang mengukur proporsi prediksi positif yang benar dalam machine learning disebut...",
+                optionA: "Accuracy",
+                optionB: "Recall",
+                optionC: "Precision",
+                optionD: "F1-Score",
+                optionE: "ROC-AUC",
+                correct: "C",
+                score: 5,
+                category: "data"
+            },
+            {
+                no: 20,
+                question: "Dalam pemrograman berorientasi objek, konsep yang memungkinkan class untuk mewarisi properti dan method dari class lain disebut...",
+                optionA: "Encapsulation",
+                optionB: "Polymorphism",
+                optionC: "Abstraction",
+                optionD: "Inheritance",
+                optionE: "Composition",
+                correct: "D",
+                score: 5,
+                category: "programming"
+            }
+        ];
 
-    <!-- Status pengiriman -->
-    <div id="submission-status"></div>
-  </div>
+        // Quiz state
+        let currentQuestionIndex = 0;
+        let studentAnswers = [];
+        let studentData = {};
+        let quizResults = JSON.parse(localStorage.getItem('quizResults')) || [];
+        let startTime = null;
 
-  <script>
-    let studentData = { name: "", class: "", totalScore: 0, maxScore: 0, answers: {} };
+        // Initialize quiz
+        function startQuiz() {
+            const name = document.getElementById('studentName').value.trim();
+            const studentClass = document.getElementById('studentClass').value;
 
-    // --- DAFTAR SOAL CONTOH (isi 3 saja biar singkat, tambahkan sampai 20 sesuai kebutuhan) ---
-    const originalQuestions = [
-      { text: 'Metode pengujian reliabilitas data digunakan untuk . . . .',
-        options: ['meningkatkan akurasi data', 'mengurangi sampel penelitian', 'menjamin data bebas dari bias', 'membandingkan data dengan teori', 'menentukan konsistensi pengukuran'],
-        answer: 4, score: 5 },
-      { text: 'Strategi untuk memastikan sampel mewakili populasi adalah . . . .',
-        options: ['memilih subjek acak', 'memilih subjek aktif sosial', 'menggunakan subjek mudah diakses', 'berdasarkan ketersediaan', 'memilih ekstrem'],
-        answer: 0, score: 5 },
-      { text: 'Metode untuk mendeteksi outlier dalam R adalah . . . .',
-        options: ['mengabaikan data aneh', 'pakai mean saja', 'pakai IQR', 'kumpulkan lebih banyak data', 'analisis variansi'],
-        answer: 2, score: 5 }
-    ];
-    // --- Akhir daftar soal ---
+            if (!name || !studentClass) {
+                alert('Mohon lengkapi nama dan kelas terlebih dahulu!');
+                return;
+            }
 
-    // Generate soal ke halaman
-    window.onload = () => {
-      let qContainer = document.getElementById("questions");
-      originalQuestions.forEach((q, i) => {
-        let qNum = i + 1;
-        let optionsHtml = q.options.map((opt, idx) => {
-          let abjad = String.fromCharCode(65 + idx);
-          return `<label><input type="radio" name="q${qNum}" value="${idx}"> ${abjad}. ${opt}</label>`;
-        }).join("");
-        qContainer.innerHTML += `
-          <div class="question">
-            <h3>${qNum}. ${q.text}</h3>
-            <div class="options">${optionsHtml}</div>
-          </div>`;
-      });
-    };
+            studentData = {
+                name: name,
+                class: studentClass,
+                startTime: new Date()
+            };
 
-    function startQuiz() {
-      const nama = document.getElementById("nama").value.trim();
-      const kelas = document.getElementById("kelas").value.trim();
-      if (!nama || !kelas) {
-        alert("Isi Nama dan Kelas terlebih dahulu!");
-        return;
-      }
-      studentData.name = nama;
-      studentData.class = kelas;
-      document.getElementById("student-info").style.display = "none";
-      document.getElementById("quiz-form").style.display = "block";
-    }
+            startTime = new Date();
+            studentAnswers = new Array(questions.length).fill(null);
+            currentQuestionIndex = 0;
 
-    function finishQuiz() {
-      let score = 0, maxScore = originalQuestions.reduce((a,b)=>a+b.score,0);
-      let answers = {};
-      originalQuestions.forEach((q, i) => {
-        let key = "q"+(i+1);
-        const selected = document.querySelector(`input[name=${key}]:checked`);
-        if (selected) {
-          answers[key] = selected.value;
-          if (parseInt(selected.value) === q.answer) score += q.score;
-        } else {
-          answers[key] = "";
+            document.getElementById('studentForm').style.display = 'none';
+            document.getElementById('quizInterface').style.display = 'block';
+            document.getElementById('displayName').textContent = name;
+            document.getElementById('displayClass').textContent = studentClass;
+
+            showQuestion();
         }
-      });
-      studentData.totalScore = score;
-      studentData.maxScore = maxScore;
-      studentData.answers = answers;
-      sendToServer();
-    }
 
-    async function sendToServer() {
-      const submissionStatus = document.getElementById('submission-status');
-      submissionStatus.innerHTML = '<div class="loading-spinner"></div> Mengirim ke server...';
+        function showQuestion() {
+            const question = questions[currentQuestionIndex];
+            
+            document.getElementById('questionNumber').textContent = currentQuestionIndex + 1;
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            document.getElementById('questionText').textContent = question.question;
 
-      const payload = {
-        Nama_Lengkap: studentData.name,
-        Kelas: studentData.class,
-        Score_PG: studentData.totalScore,
-        Score_Max: studentData.maxScore,
-        Jawaban: studentData.answers
-      };
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = `
+                <div class="option-item" onclick="selectOption('A')">
+                    <div class="option-letter">A</div>
+                    <div>${question.optionA}</div>
+                </div>
+                <div class="option-item" onclick="selectOption('B')">
+                    <div class="option-letter">B</div>
+                    <div>${question.optionB}</div>
+                </div>
+                <div class="option-item" onclick="selectOption('C')">
+                    <div class="option-letter">C</div>
+                    <div>${question.optionC}</div>
+                </div>
+                <div class="option-item" onclick="selectOption('D')">
+                    <div class="option-letter">D</div>
+                    <div>${question.optionD}</div>
+                </div>
+                <div class="option-item" onclick="selectOption('E')">
+                    <div class="option-letter">E</div>
+                    <div>${question.optionE}</div>
+                </div>
+            `;
 
-      try {
-        const response = await fetch("simpan_hasil.php", {   // ⚡ Ganti ke URL penuh jika hosting beda domain
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
+            // Restore previous answer if exists
+            if (studentAnswers[currentQuestionIndex]) {
+                selectOption(studentAnswers[currentQuestionIndex], false);
+            }
+
+            // Update progress
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+            document.getElementById('nextBtn').style.display = currentQuestionIndex === questions.length - 1 ? 'none' : 'inline-block';
+            document.getElementById('finishBtn').style.display = currentQuestionIndex === questions.length - 1 ? 'inline-block' : 'none';
+        }
+
+        function selectOption(option, updateAnswer = true) {
+            // Remove previous selection
+            document.querySelectorAll('.option-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+
+            // Add selection to clicked option
+            const optionItems = document.querySelectorAll('.option-item');
+            const optionIndex = ['A', 'B', 'C', 'D', 'E'].indexOf(option);
+            optionItems[optionIndex].classList.add('selected');
+
+            if (updateAnswer) {
+                studentAnswers[currentQuestionIndex] = option;
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                showQuestion();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion();
+            }
+        }
+
+        function finishQuiz() {
+            const unanswered = studentAnswers.filter(answer => answer === null).length;
+            
+            if (unanswered > 0) {
+                if (!confirm(`Anda belum menjawab ${unanswered} soal. Yakin ingin menyelesaikan ujian?`)) {
+                    return;
+                }
+            }
+
+            calculateResults();
+        }
+
+        function calculateResults() {
+            const endTime = new Date();
+            const duration = Math.round((endTime - startTime) / 1000 / 60); // in minutes
+            
+            let correctCount = 0;
+            let totalScore = 0;
+
+            studentAnswers.forEach((answer, index) => {
+                if (answer === questions[index].correct) {
+                    correctCount++;
+                    totalScore += questions[index].score;
+                }
+            });
+
+            const result = {
+                id: Date.now(),
+                name: studentData.name,
+                class: studentData.class,
+                score: totalScore,
+                correctAnswers: correctCount,
+                wrongAnswers: questions.length - correctCount,
+                duration: duration,
+                completedAt: endTime.toLocaleString('id-ID'),
+                answers: [...studentAnswers]
+            };
+
+            // Save to localStorage with error handling
+            try {
+                quizResults.push(result);
+                localStorage.setItem('quizResults', JSON.stringify(quizResults));
+                console.log('Hasil ujian berhasil disimpan:', result);
+            } catch (error) {
+                console.error('Error menyimpan hasil:', error);
+                // Fallback: simpan ke sessionStorage jika localStorage penuh
+                try {
+                    sessionStorage.setItem('quizResults_backup', JSON.stringify([result]));
+                    alert('Data tersimpan sementara. Mohon hubungi admin untuk backup data.');
+                } catch (sessionError) {
+                    console.error('Error menyimpan ke sessionStorage:', sessionError);
+                }
+            }
+
+            showResults(result);
+            updateAdminStats();
+        }
+
+        function showResults(result) {
+            document.getElementById('quizInterface').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+
+            document.getElementById('finalScore').textContent = result.score;
+            document.getElementById('resultName').textContent = result.name;
+            document.getElementById('resultClass').textContent = result.class;
+            document.getElementById('correctAnswers').textContent = result.correctAnswers;
+            document.getElementById('wrongAnswers').textContent = result.wrongAnswers;
+            document.getElementById('completionTime').textContent = result.completedAt;
+        }
+
+        function restartQuiz() {
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('studentForm').style.display = 'block';
+            document.getElementById('studentName').value = '';
+            document.getElementById('studentClass').value = '';
+            
+            currentQuestionIndex = 0;
+            studentAnswers = [];
+            studentData = {};
+        }
+
+        // Admin functions
+        function toggleAdmin() {
+            const adminContent = document.getElementById('adminContent');
+            adminContent.style.display = adminContent.style.display === 'none' ? 'block' : 'none';
+            
+            if (adminContent.style.display === 'block') {
+                updateAdminStats();
+                renderResultsTable();
+            }
+        }
+
+        function updateAdminStats() {
+            const totalParticipants = quizResults.length;
+            const averageScore = totalParticipants > 0 ? 
+                Math.round(quizResults.reduce((sum, result) => sum + result.score, 0) / totalParticipants) : 0;
+            const highestScore = totalParticipants > 0 ? 
+                Math.max(...quizResults.map(result => result.score)) : 0;
+
+            document.getElementById('totalParticipants').textContent = totalParticipants;
+            document.getElementById('averageScore').textContent = averageScore;
+            document.getElementById('highestScore').textContent = highestScore;
+        }
+
+        function renderResultsTable() {
+            const tbody = document.getElementById('resultsTableBody');
+            tbody.innerHTML = quizResults.map((result, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${result.name}</td>
+                    <td>${result.class}</td>
+                    <td>${result.score}</td>
+                    <td>${result.correctAnswers}</td>
+                    <td>${result.wrongAnswers}</td>
+                    <td>${result.completedAt}</td>
+                </tr>
+            `).join('');
+        }
+
+        function downloadResults() {
+            if (quizResults.length === 0) {
+                alert('Belum ada data hasil ujian untuk diunduh!');
+                return;
+            }
+
+            const csvContent = [
+                ['No', 'Nama', 'Kelas', 'Nilai', 'Benar', 'Salah', 'Waktu Selesai'],
+                ...quizResults.map((result, index) => [
+                    index + 1,
+                    result.name,
+                    result.class,
+                    result.score,
+                    result.correctAnswers,
+                    result.wrongAnswers,
+                    result.completedAt
+                ])
+            ].map(row => row.join(',')).join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `rekap_hasil_ujian_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function exportBackup() {
+            if (quizResults.length === 0) {
+                alert('Belum ada data untuk di-backup!');
+                return;
+            }
+
+            const backupData = {
+                exportDate: new Date().toISOString(),
+                totalResults: quizResults.length,
+                results: quizResults
+            };
+
+            const jsonContent = JSON.stringify(backupData, null, 2);
+            const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `backup_ujian_${new Date().toISOString().split('T')[0]}.json`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert(`Backup berhasil! ${quizResults.length} hasil ujian telah di-export.`);
+        }
+
+        function importBackup() {
+            document.getElementById('backupFile').click();
+        }
+
+        function handleBackupImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const backupData = JSON.parse(e.target.result);
+                    
+                    if (!backupData.results || !Array.isArray(backupData.results)) {
+                        alert('Format file backup tidak valid!');
+                        return;
+                    }
+
+                    const importedResults = backupData.results;
+                    const currentIds = quizResults.map(r => r.id);
+                    const newResults = importedResults.filter(r => !currentIds.includes(r.id));
+                    
+                    if (newResults.length === 0) {
+                        alert('Tidak ada data baru untuk diimport!');
+                        return;
+                    }
+
+                    if (confirm(`Ditemukan ${newResults.length} hasil ujian baru. Import data ini?`)) {
+                        quizResults.push(...newResults);
+                        localStorage.setItem('quizResults', JSON.stringify(quizResults));
+                        updateAdminStats();
+                        renderResultsTable();
+                        alert(`Berhasil import ${newResults.length} hasil ujian baru!`);
+                    }
+                    
+                } catch (error) {
+                    console.error('Error importing backup:', error);
+                    alert('Error: File backup tidak dapat dibaca!');
+                }
+            };
+            
+            reader.readAsText(file);
+            event.target.value = ''; // Reset file input
+        }
+
+        // Initialize admin stats on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load data from both localStorage and sessionStorage backup
+            loadAllResults();
+            updateAdminStats();
+            
+            // Hidden admin access - press Ctrl+Shift+A
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                    const adminPanel = document.getElementById('adminPanel');
+                    adminPanel.style.display = adminPanel.style.display === 'none' ? 'block' : 'none';
+                    if (adminPanel.style.display === 'block') {
+                        updateAdminStats();
+                        renderResultsTable();
+                    }
+                }
+            });
+
+            // Auto-save every 30 seconds to prevent data loss
+            setInterval(function() {
+                if (quizResults.length > 0) {
+                    try {
+                        localStorage.setItem('quizResults', JSON.stringify(quizResults));
+                        localStorage.setItem('lastBackup', new Date().toISOString());
+                    } catch (error) {
+                        console.warn('Auto-save gagal:', error);
+                    }
+                }
+            }, 30000);
         });
 
-        const result = await response.json();
-        if (result.result === "success") {
-          submissionStatus.innerHTML = `<span style="color:green;font-weight:bold;">✅ Data tersimpan!</span><br>Nilai kamu: ${studentData.totalScore}/${studentData.maxScore}`;
-        } else {
-          submissionStatus.innerHTML = `<span style="color:red;font-weight:bold;">❌ Gagal simpan.</span><br><small>${result.message}</small>`;
+        // Function to load all results from various storage
+        function loadAllResults() {
+            try {
+                // Load from localStorage
+                const localData = JSON.parse(localStorage.getItem('quizResults')) || [];
+                
+                // Load from sessionStorage backup
+                const sessionData = JSON.parse(sessionStorage.getItem('quizResults_backup')) || [];
+                
+                // Combine and deduplicate based on ID
+                const allResults = [...localData, ...sessionData];
+                const uniqueResults = allResults.filter((result, index, self) => 
+                    index === self.findIndex(r => r.id === result.id)
+                );
+                
+                quizResults = uniqueResults;
+                
+                // Save back to localStorage if we found backup data
+                if (sessionData.length > 0) {
+                    localStorage.setItem('quizResults', JSON.stringify(quizResults));
+                    sessionStorage.removeItem('quizResults_backup');
+                }
+                
+            } catch (error) {
+                console.error('Error loading results:', error);
+                quizResults = [];
+            }
         }
-      } catch (error) {
-        submissionStatus.innerHTML = `<span style="color:red;font-weight:bold;">❌ Error koneksi ke server.</span><br><small>${error}</small>`;
-      }
-    }
-  </script>
-</body>
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9884a008153d445e',t:'MTc1OTQxMjU2OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
