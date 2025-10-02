@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ujian Informatika - Soal Per Soal</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         // Konfigurasi Tailwind untuk font Inter
@@ -14,7 +13,7 @@
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                     },
-                }
+                },
             }
         }
     </script>
@@ -68,8 +67,7 @@
     </div>
 
     <div class="question-area space-y-6" id="quiz-content">
-        <!-- Konten Kuis akan dirender di sini -->
-    </div>
+        </div>
     
     <div id="timer-message" class="text-center text-sm font-medium text-gray-600"></div>
 
@@ -82,277 +80,36 @@
 
 <script>
     // ⚠️ PERHATIAN: GANTI INI DENGAN URL GOOGLE APPS SCRIPT WEB APP ANDA
-    const GOOGLE_SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzlTwmg-mTcVSUhSDcQ5X_MmtEOh9Py1jdak81pMY-1eu9cykQ2gB_dC5kSBAytOebj/exec"; 
+    const GOOGLE_SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzlTwmg-mTcVSUhSDcQ5X_MmtEOh9Py1jdak81pMY-1eu9cykQ2gB_dC5kSBAytOebj/exec"; // <<< GANTI INI
     const JEDA_WAKTU = 0; // Detik
 
-    // --- DAFTAR 20 SOAL LENGKAP (SEMUA MC) ---
-    // Semua soal PG bernilai 5 poin, total maksimal 100
+    // --- DAFTAR 20 SOAL LENGKAP ---
+    // (Kode soal dihilangkan untuk efisiensi ruang, anggap sudah disalin dari kode Anda)
     const originalQuestions = [
-        { 
-            type: 'mc', 
-            text: 'Metode pengujian reliabilitas data dalam rangka memperoleh data yang valid merupakan fase untuk . . . .', 
-            options: [
-                'meningkatkan akurasi data',
-                'mengurangi sampel penelitian',
-                'menjamin data bebas dari bias',
-                'membandingkan data dengan teori',
-                'menentukan konsistensi pengukuran'
-            ], 
-            answer: 4, // E
-            score: 5 
-        },
-        { 
-            type: 'mc', 
-            text: 'Terkait potensi bias seleksi dalam analisis data, strategi yang tepat untuk memastikan sampel penelitian mewakili populasi adalah . . . .', 
-            options: [
-                'memilih subjek secara acak',
-                'memilih subjek yang paling aktif secara sosial',
-                'menggunakan subjek yang paling mudah diakses',
-                'memilih subjek berdasarkan ketersediaan mereka',
-                'memfokuskan pada subjek dengan karakteristik yang paling ekstrem'
-            ], 
-            answer: 0, // A
-            score: 5 
-        },
-        { 
-            type: 'mc', 
-            text: 'Ketika menggunakan bahasa pemrograman R, metode yang tepat untuk mendeteksi outliers dalam dataset adalah . . . .', 
-            options: [
-                'mengabaikan semua data yang tidak sesuai dengan ekspektasi',
-                'menggunakan mean sebagai satu-satunya metode analisis',
-                'menggunakan interquartile range',
-                'mengumpulkan lebih banyak data',
-                'menganalisis variansi data'
-            ], 
-            answer: 2, // C
-            score: 5 
-        },
-        { 
-            type: 'mc', 
-            text: 'Dalam proses validasi data, visualisasi data yang menggambarkan kondisi data terbaru perlu ditampilkan. Tujuannya adalah . . . .', 
-            options: [
-                'hanya untuk estetika',
-                'untuk menggantikan semua metode statistika',
-                'untuk mengurangi jumlah data yang harus dianalisis',
-                'untuk memperlihatkan hubungan kompleks dalam data',
-                'sebagai satu-satunya metode analisis yang diperlukan'
-            ], 
-            answer: 3, // D
-            score: 5 
-        },
-        { 
-            type: 'mc', 
-            text: 'Jika perusahaan komputer mengalami kegagalan dan kesalahan dalam memprediksi persentase kenaikan penjualan berdasarkan data hasil penelitian kuantitatif yang dilakukan, maka dampak yang mungkin muncul adalah . . . .', 
-            options: [
-                'tidak berpengaruh sama sekali',
-                'meningkatkan reliabilitas temuan',
-                'mempercepat proses analisis data',
-                'hanya memengaruhi analisis deskriptif',
-                'menyebabkan estimasi yang bias dan tidak akurat'
-            ], 
-            answer: 4, // E
-            score: 5 
-        },
-        { 
-            type: 'mc', 
-            text: 'Dibandingkan dengan metode manual, sistem pengolahan data berbasis elektronik memiliki beberapa keunggulan antara lain . . . .', 
-            options: [
-                'lebih lambat',
-                'lebih ekonomis',
-                'lebih mudah membuat kesalahan',
-                'tingkat akurasi dan efisiensi tinggi',
-                'membutuhkan lebih banyak tenaga kerja'
-            ], 
-            answer: 3, // D
-            score: 5 
-        },
-        { 
-            type: 'mc', 
-            text: 'Dalam tahapan pengolahan data mining, dikenal istilah fase pattern analysis. Tujuan penerapan fase pattern analysis adalah . . . .', 
-            options: [
-                'mempercepat proses analisis data',
-                'membersihkan data yang tidak lengkap',
-                'mengurangi jumlah data yang dianalisis',
-                'menemukan pola hubungan antardata',
-                'mengintegrasikan data dari sumber yang berbeda'
-            ], 
-            answer: 3, // D
-            score: 5 
-        },
-        { 
-            type: 'mc', 
-            text: 'Dalam pengolahan data, sangat penting bagi seorang administrator data untuk menerapkan proses reduksi data. Pernyataan berikut yang menjelaskan fungsi proses tersebut adalah . . . .', 
-            options: [
-                'menambahkan lebih banyak variabel ke analisis',
-                'menggabungkan semua dataset menjadi satu',
-                'meningkatkan jumlah data yang tersedia',
-                'meningkatkan kualitas data untuk analisis',
-                'membuat laporan akhir.'
-            ], 
-            answer: 3, // D
-            score: 5 
-        },
-        { 
-            type: 'mc', 
-            text: 'Pernyataan berikut yang merepresentasikan tujuan utama dari data cleaning dalam data preprocessing adalah . . . .', 
-            options: [
-                'mengurangi volume data',
-                'meningkatkan kecepatan analisis data',
-                'mengurangi kebutuhan akan data mining',
-                'membuat data menjadi lebih menarik',
-                'meningkatkan akurasi, kelengkapan, konsistensi, dan kepercayaan data.'
-            ], 
-            answer: 4, // E
-            score: 5 
-        },
-        { 
-            type: 'mc', 
-            text: 'Salah satu teknik data cleaning adalah dengan menangani nilai yang hilang atau kosong (null). Salah satu teknik yang tepat untuk mendukung proses tersebut adalah . . . .', 
-            options: [
-                'menghapus baris data',
-                'menggunakan nilai modus',
-                'menggunakan nilai median',
-                'menggunakan nilai rata-rata',
-                'menggunakan model regresi non-linear kompleks'
-            ], 
-            answer: 3, // D
-            score: 5 
-        },
-        { 
-            type: 'mc', 
-            text: 'Saat menjalankan compiler Java dengan perintah command prompt, muncul pesan bahwa Java tidak dikenal. Padahal, proses instalasi telah berhasil dilakukan. Tindakan yang harus dilakukan untuk mengatasi permasalahan tersebut adalah....', 
-            options: [
-                'menginstal ulang JDK',
-                'men-disable antivirus di Windows',
-                'menginstal web server di Windows',
-                'memperbaiki path environment',
-                'menginstal Java di Windows'
-            ], 
-            answer: 3, // D
-            score: 5 
-        },
-        { 
-            type: 'mc', 
-            text: 'Perhatikan kode program berikut: public class Klinik { public static void main(String[] args) { System.out.println("RS. Indriyana"); } } Bagian program utama yang akan dieksekusi ketika program dijalankan adalah....', 
-            options: [
-                'package Klinik;',
-                'public class Klinik;',
-                'public static void main(String[] args)', 
-                'System.out.println("RS. Indriyana")',
-                '}'
-            ], 
-            answer: 2, // C
-            score: 5 
-        },
-        { 
-            type: 'mc', 
-            text: 'Perhatikan kode program berikut: class Kapal { public static void main(String[] args) { } } Program dapat dikompilasi, tetapi program sukses dieksekusi tanpa error karena tidak terdapat method main. Kesimpulan yang paling tepat adalah....', 
-            options: [
-                'Program dapat dikompilasi, tetapi program sukses dieksekusi tanpa error dan dapat dieksekusi karena tidak terdapat method main.',
-                'kelas dapat diinstansiasi',
-                'program sukses dikompilasi tanpa error dan dapat dieksekusi', // C
-                'Program dapat dikompilasi, tetapi program tidak dapat dieksekusi karena tidak ada method main',
-                'Program Java tidak berhasil dikompilasi, tetapi dapat dijalankan'
-            ], 
-            answer: 2, // C
-            score: 5 
-        },
-        { 
-            type: 'mc', 
-            text: 'Perhatikan kode program berikut: public class Contoh { static int users = 0; public void CekSign() { users += 1; System.out.println("users: " + users); } } Nomor baris program yang akan menyebabkan error ketika dikompilasi adalah....', 
-            options: [
-                'baris ke-1',
-                'baris ke-2',
-                'baris ke-3',
-                'baris ke-4',
-                'baris ke-5'
-            ], 
-            answer: 2, // C (Diasumsikan error terjadi jika CekSign dipanggil dari static context tanpa instansiasi)
-            score: 5 
-        },
-        { 
-            type: 'mc', 
-            text: 'Operator penugasan yang digunakan untuk membandingkan apakah dua data memiliki nilai yang sama adalah....', 
-            options: [
-                '<',
-                '!=',
-                '>',
-                '==', 
-                '!'
-            ], 
-            answer: 3, // D
-            score: 5 
-        },
-        { 
-            type: 'mc', 
-            text: 'Perhatikan kode program berikut: double x = 7; double y = 5; System.out.println("Apakah x <= y): " + (x <= y)); System.out.println("Apakah x >= y): " + (x >= y)); Program tersebut menerapkan operasi kondisional. Hasil kompilasi dari program tersebut adalah....', 
-            options: [
-                'true',
-                'false',
-                'true, false',
-                'false, true', // D (x<=y -> false, x>=y -> true)
-                'true, true'
-            ], 
-            answer: 3, // D
-            score: 5 
-        },
-        { 
-            type: 'mc', 
-            text: 'Struktur perulangan yang akan melakukan kondisi tidak terlebih dahulu adalah....', 
-            options: [
-                'for',
-                'while',
-                'for-do',
-                'do while', 
-                'case of'
-            ], 
-            answer: 3, // D
-            score: 5 
-        },
-        { 
-            type: 'mc', 
-            text: 'Perhatikan tahapan pengembangan aplikasi berikut: (1) Identifikasi masalah (2) Implementasi dan update (3) Mendesain sistem (4) Compile dan testing (5) Training dan sosialisasi (6) Menulis kode program. Urutan tahapan pengembangan aplikasi yang tepat adalah....', 
-            options: [
-                '(1) - (3) - (2) - (6) - (4) - (5)',
-                '(1) - (3) - (6) - (2) - (5) - (4)',
-                '(1) - (3) - (6) - (4) - (2) - (5)',
-                '(1) - (3) - (6) - (4) - (5) - (2)', // D
-                '(3) - (1) - (5) - (2) - (4) - (6)'
-            ], 
-            answer: 3, // D
-            score: 5 
-        },
-        { 
-            type: 'mc', 
-            text: 'Setelah program dirilis ke pengguna, akan dilakukan pemantauan penggunaan program selama beberapa waktu. Hal ini dilakukan untuk melihat adanya bug atau kesalahan dalam aplikasi. Aktivitas ini dilakukan pada tahap....', 
-            options: [
-                'Mendesain sistem',
-                'Compile dan testing',
-                'Identifikasi masalah',
-                'Training dan update sistem',
-                'Implementasi dan update sistem'
-            ], 
-            answer: 4, // E
-            score: 5 
-        },
-        // Soal Esai yang diubah menjadi PG (Soal ke-20)
-        { 
-            type: 'mc', 
-            text: 'Dalam konteks penelitian kuantitatif, peran utama dari "validitas eksternal" dalam generalisasi data adalah untuk . . . .', 
-            options: [
-                'memastikan akurasi hasil pengukuran instrumen penelitian',
-                'mengukur seberapa jauh hasil penelitian dapat diaplikasikan ke populasi yang lebih luas', // Jawaban Benar
-                'menentukan konsistensi hasil penelitian jika diulang di waktu yang berbeda',
-                'memperkuat hubungan sebab-akibat antara variabel yang diteliti',
-                'membuktikan bahwa instrumen penelitian bebas dari kesalahan sistematis'
-            ], 
-            answer: 1, // B
-            score: 5 
-        }
+        { type: 'mc', text: 'Metode pengujian reliabilitas data dalam rangka memperoleh data yang valid merupakan fase untuk . . . .', options: [ 'meningkatkan akurasi data', 'mengurangi sampel penelitian', 'menjamin data bebas dari bias', 'membandingkan data dengan teori', 'menentukan konsistensi pengukuran' ], answer: 4, score: 5 },
+        { type: 'mc', text: 'Terkait potensi bias seleksi dalam analisis data, strategi yang tepat untuk memastikan sampel penelitian mewakili populasi adalah . . . .', options: [ 'memilih subjek secara acak', 'memilih subjek yang paling aktif secara sosial', 'menggunakan subjek yang paling mudah diakses', 'memilih subjek berdasarkan ketersediaan mereka', 'memfokuskan pada subjek dengan karakteristik yang paling ekstrem' ], answer: 0, score: 5 },
+        { type: 'mc', text: 'Ketika menggunakan bahasa pemrograman R, metode yang tepat untuk mendeteksi outliers dalam dataset adalah . . . .', options: [ 'mengabaikan semua data yang tidak sesuai dengan ekspektasi', 'menggunakan mean sebagai satu-satunya metode analisis', 'menggunakan interquartile range', 'mengumpulkan lebih banyak data', 'menganalisis variansi data' ], answer: 2, score: 5 },
+        { type: 'mc', text: 'Dalam proses validasi data, visualisasi data yang menggambarkan kondisi data terbaru perlu ditampilkan. Tujuannya adalah . . . .', options: [ 'hanya untuk estetika', 'untuk menggantikan semua metode statistika', 'untuk mengurangi jumlah data yang harus dianalisis', 'untuk memperlihatkan hubungan kompleks dalam data', 'sebagai satu-satunya metode analisis yang diperlukan' ], answer: 3, score: 5 },
+        { type: 'mc', text: 'Jika perusahaan komputer mengalami kegagalan dan kesalahan dalam memprediksi persentase kenaikan penjualan berdasarkan data hasil penelitian kuantitatif yang dilakukan, maka dampak yang mungkin muncul adalah . . . .', options: [ 'tidak berpengaruh sama sekali', 'meningkatkan reliabilitas temuan', 'mempercepat proses analisis data', 'hanya memengaruhi analisis deskriptif', 'menyebabkan estimasi yang bias dan tidak akurat' ], answer: 4, score: 5 },
+        { type: 'mc', text: 'Dibandingkan dengan metode manual, sistem pengolahan data berbasis elektronik memiliki beberapa keunggulan antara lain . . . .', options: [ 'lebih lambat', 'lebih ekonomis', 'lebih mudah membuat kesalahan', 'tingkat akurasi dan efisiensi tinggi', 'membutuhkan lebih banyak tenaga kerja' ], answer: 3, score: 5 },
+        { type: 'mc', text: 'Dalam tahapan pengolahan data mining, dikenal istilah fase pattern analysis. Tujuan penerapan fase pattern analysis adalah . . . .', options: [ 'mempercepat proses analisis data', 'membersihkan data yang tidak lengkap', 'mengurangi jumlah data yang dianalisis', 'menemukan pola hubungan antardata', 'mengintegrasikan data dari sumber yang berbeda' ], answer: 3, score: 5 },
+        { type: 'mc', text: 'Dalam pengolahan data, sangat penting bagi seorang administrator data untuk menerapkan proses reduksi data. Pernyataan berikut yang menjelaskan fungsi proses tersebut adalah . . . .', options: [ 'menambahkan lebih banyak variabel ke analisis', 'menggabungkan semua dataset menjadi satu', 'meningkatkan jumlah data yang tersedia', 'meningkatkan kualitas data untuk analisis', 'membuat laporan akhir.' ], answer: 3, score: 5 },
+        { type: 'mc', text: 'Pernyataan berikut yang merepresentasikan tujuan utama dari data cleaning dalam data preprocessing adalah . . . .', options: [ 'mengurangi volume data', 'meningkatkan kecepatan analisis data', 'mengurangi kebutuhan akan data mining', 'membuat data menjadi lebih menarik', 'meningkatkan akurasi, kelengkapan, konsistensi, dan kepercayaan data.' ], answer: 4, score: 5 },
+        { type: 'mc', text: 'Salah satu teknik data cleaning adalah dengan menangani nilai yang hilang atau kosong (null). Salah satu teknik yang tepat untuk mendukung proses tersebut adalah . . . .', options: [ 'menghapus baris data', 'menggunakan nilai modus', 'menggunakan nilai median', 'menggunakan nilai rata-rata', 'menggunakan model regresi non-linear kompleks' ], answer: 3, score: 5 },
+        { type: 'mc', text: 'Saat menjalankan compiler Java dengan perintah command prompt, muncul pesan bahwa Java tidak dikenal. Padahal, proses instalasi telah berhasil dilakukan. Tindakan yang harus dilakukan untuk mengatasi permasalahan tersebut adalah....', options: [ 'menginstal ulang JDK', 'men-disable antivirus di Windows', 'menginstal web server di Windows', 'memperbaiki path environment', 'menginstal Java di Windows' ], answer: 3, score: 5 },
+        { type: 'mc', text: 'Perhatikan kode program berikut: public class Klinik { public static void main(String[] args) { System.out.println("RS. Indriyana"); } } Bagian program utama yang akan dieksekusi ketika program dijalankan adalah....', options: [ 'package Klinik;', 'public class Klinik;', 'public static void main(String[] args)', 'System.out.println("RS. Indriyana")', '}' ], answer: 2, score: 5 },
+        { type: 'mc', text: 'Perhatikan kode program berikut: class Kapal { public static void main(String[] args) { } } Program dapat dikompilasi, tetapi program sukses dieksekusi tanpa error karena tidak terdapat method main. Kesimpulan yang paling tepat adalah....', options: [ 'Program dapat dikompilasi, tetapi program sukses dieksekusi tanpa error dan dapat dieksekusi karena tidak terdapat method main.', 'kelas dapat diinstansiasi', 'program sukses dikompilasi tanpa error dan dapat dieksekusi', 'Program dapat dikompilasi, tetapi program tidak dapat dieksekusi karena tidak ada method main', 'Program Java tidak berhasil dikompilasi, tetapi dapat dijalankan' ], answer: 2, score: 5 },
+        { type: 'mc', text: 'Perhatikan kode program berikut: public class Contoh { static int users = 0; public void CekSign() { users += 1; System.out.println("users: " + users); } } Nomor baris program yang akan menyebabkan error ketika dikompilasi adalah....', options: [ 'baris ke-1', 'baris ke-2', 'baris ke-3', 'baris ke-4', 'baris ke-5' ], answer: 2, score: 5 },
+        { type: 'mc', text: 'Operator penugasan yang digunakan untuk membandingkan apakah dua data memiliki nilai yang sama adalah....', options: [ '<', '!=', '>', '==', '!' ], answer: 3, score: 5 },
+        { type: 'mc', text: 'Perhatikan kode program berikut: double x = 7; double y = 5; System.out.println("Apakah x <= y): " + (x <= y)); System.out.println("Apakah x >= y): " + (x >= y)); Program tersebut menerapkan operasi kondisional. Hasil kompilasi dari program tersebut adalah....', options: [ 'true', 'false', 'true, false', 'false, true', 'true, true' ], answer: 3, score: 5 },
+        { type: 'mc', text: 'Struktur perulangan yang akan melakukan kondisi tidak terlebih dahulu adalah....', options: [ 'for', 'while', 'for-do', 'do while', 'case of' ], answer: 3, score: 5 },
+        { type: 'mc', text: 'Perhatikan tahapan pengembangan aplikasi berikut: (1) Identifikasi masalah (2) Implementasi dan update (3) Mendesain sistem (4) Compile dan testing (5) Training dan sosialisasi (6) Menulis kode program. Urutan tahapan pengembangan aplikasi yang tepat adalah....', options: [ '(1) - (3) - (2) - (6) - (4) - (5)', '(1) - (3) - (6) - (2) - (5) - (4)', '(1) - (3) - (6) - (4) - (2) - (5)', '(1) - (3) - (6) - (4) - (5) - (2)', '(3) - (1) - (5) - (2) - (4) - (6)' ], answer: 3, score: 5 },
+        { type: 'mc', text: 'Setelah program dirilis ke pengguna, akan dilakukan pemantauan penggunaan program selama beberapa waktu. Hal ini dilakukan untuk melihat adanya bug atau kesalahan dalam aplikasi. Aktivitas ini dilakukan pada tahap....', options: [ 'Mendesain sistem', 'Compile dan testing', 'Identifikasi masalah', 'Training dan update sistem', 'Implementasi dan update sistem' ], answer: 4, score: 5 },
+        { type: 'mc', text: 'Dalam konteks penelitian kuantitatif, peran utama dari "validitas eksternal" dalam generalisasi data adalah untuk . . . .', options: [ 'memastikan akurasi hasil pengukuran instrumen penelitian', 'mengukur seberapa jauh hasil penelitian dapat diaplikasikan ke populasi yang lebih luas', 'menentukan konsistensi hasil penelitian jika diulang di waktu yang berbeda', 'memperkuat hubungan sebab-akibat antara variabel yang diteliti', 'membuktikan bahwa instrumen penelitian bebas dari kesalahan sistematis' ], answer: 1, score: 5 }
     ];
     // --- AKHIR DAFTAR 20 SOAL LENGKAP ---
 
-    let questions = [...originalQuestions]; // Buat salinan yang akan diacak
+    let questions = [...originalQuestions]; 
     let currentQuestionIndex = -1;
     let studentData = { name: '', class: '', answers: [], totalScore: 0, maxScore: 0 };
     let timerInterval;
@@ -460,7 +217,6 @@
                 <div class="options space-y-3 mt-4">`;
 
             // Cari jawaban siswa yang sudah ada untuk soal ini
-            // Jawaban siswa disimpan sebagai ORIGINAL INDEX dari opsi yang dipilih
             const existingAnswer = studentData.answers.find(a => a.q_index === currentQuestionIndex);
             const studentAnswerOriginalIndex = existingAnswer ? existingAnswer.student_answer : null;
 
@@ -473,7 +229,7 @@
             // 2. Acak opsi untuk tampilan
             shuffleArray(optionsWithIndex);
             
-            // 3. Render opsi (Hanya PG, karena sudah tidak ada esai)
+            // 3. Render opsi
             optionsWithIndex.forEach((optData, i) => {
                 const labelId = `q${currentQuestionIndex}-opt${i}`;
                 const letter = String.fromCharCode(65 + i); // Display letters A, B, C...
@@ -542,7 +298,7 @@
             studentData.name = nameInput;
             studentData.class = classSelect;
             
-            // Hitung Score_Max total (hanya sekali, sekarang semua PG)
+            // Hitung Score_Max total
             studentData.maxScore = questions.reduce((sum, q) => sum + q.score, 0);
             
             currentQuestionIndex++;
@@ -570,7 +326,6 @@
 
             // Hitung skor baru: studentAnswer adalah index ASLI opsi yang dipilih
             let newScoreEarned = 0;
-            // Semua soal adalah MC (PG)
             if (studentAnswer === q.answer) {
                 newScoreEarned = q.score;
             } 
@@ -600,7 +355,7 @@
         const navigation = document.getElementById('quiz-navigation');
         const status = document.getElementById('status');
         
-        // Tampilan Akhir (Semua PG, skor langsung final)
+        // Tampilan Akhir
         contentArea.innerHTML = `
             <div class="text-center p-8 bg-green-50 rounded-lg border border-green-200">
                 <h3 class="text-2xl font-bold text-green-700 mb-2">Ujian Selesai 🎉</h3>
@@ -616,7 +371,7 @@
         sendToGoogleSheet();
     }
 
-    // 🔗 Kirim data ke Google Sheet
+    // 🔗 Kirim data ke Google Sheet (SUDAH DIPERBAIKI DAN DILENGKAPI)
     async function sendToGoogleSheet() {
         const submissionStatus = document.getElementById('submission-status');
         submissionStatus.innerHTML = '<div class="flex items-center justify-center space-x-2"><div class="loading-spinner"></div><span>Sedang mengirim data...</span></div>';
@@ -625,8 +380,8 @@
             timestamp: new Date().toLocaleString("id-ID"),
             Nama_Lengkap: studentData.name,
             Kelas: studentData.class,
-            Score_PG: studentData.totalScore, // Semua skor sekarang PG
-            Score_Max: studentData.maxScore, // Total skor maksimum (100)
+            Score_PG: studentData.totalScore,
+            Score_Max: studentData.maxScore,
             Raw_Answers: JSON.stringify(studentData.answers)
         };
         
@@ -640,49 +395,43 @@
                     response = await fetch(GOOGLE_SHEET_ENDPOINT, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(payload)
+                        // Pastikan payload di-STRINGIFY sebelum dikirim
+                        body: JSON.stringify(payload) 
                     });
-
-                    if (response.ok) {
-                        break; // Sukses, keluar dari loop
-                    } else {
-                        throw new Error(`HTTP Error: ${response.status}`);
+                    
+                    // Cek apakah status respons menunjukkan kegagalan (misal: 4xx, 5xx)
+                    if (!response.ok) {
+                        throw new Error(`HTTP Error Status: ${response.status} (${response.statusText})`);
                     }
 
+                    const result = await response.json();
+
+                    if (result.result === 'success') {
+                        submissionStatus.innerHTML = '<span class="text-green-600 font-bold">✅ Data berhasil terkirim!</span>';
+                        return; // Sukses, keluar dari loop retry
+                    } else {
+                        // Error dari Apps Script (catch di doPost)
+                        throw new Error(`Apps Script Error: ${result.message}`);
+                    }
                 } catch (error) {
                     if (i < maxRetries - 1) {
-                        // Terapkan penundaan: 1s, 2s, 4s
                         const delay = Math.pow(2, i) * 1000;
+                        submissionStatus.innerHTML = `<span class="text-yellow-600">Gagal kirim. Mencoba lagi dalam ${delay / 1000} detik... (${i + 1}/${maxRetries})</span>`;
                         await new Promise(resolve => setTimeout(resolve, delay));
                     } else {
-                        throw error; // Lempar error setelah percobaan terakhir gagal
+                        // Gagal setelah semua retry
+                        throw error;
                     }
                 }
             }
-
-            const res = await response.json();
-
-            if (res.result === "success") {
-                submissionStatus.className = "mt-6 text-green-600 font-bold";
-                submissionStatus.textContent = "Data Berhasil Terkirim ke Google Sheet!";
-                console.log("✅ Data terkirim:", res);
-            } else {
-                submissionStatus.className = "mt-6 text-red-600 font-bold";
-                submissionStatus.textContent = "Data GAGAL Terkirim. Cek konsol log untuk detail.";
-                console.error("❌ Error dari Server:", res.message);
-            }
-            
-        } catch (err) {
-            submissionStatus.className = "mt-6 text-red-600 font-bold";
-            submissionStatus.textContent = "Data GAGAL Terkirim. Ada masalah koneksi/endpoint. Pastikan URL Google Apps Script Anda benar dan sudah di-deploy dengan izin 'Anyone'.";
-            console.error("❌ Error saat Fetch:", err);
+        } catch (error) {
+            console.error("Final Submission Error:", error);
+            submissionStatus.innerHTML = `<span class="text-red-600 font-bold">❌ Data GAGAL Terkirim.</span><br><span class="text-sm text-red-500">Detail: ${error.message}. Cek URL Web App Anda.</span>`;
         }
     }
 
-    // Inisiasi
-    // Hitung Score_Max total di awal
-    studentData.maxScore = originalQuestions.reduce((sum, q) => sum + q.score, 0);
-    renderQuestion();
+    // Panggil renderQuestion saat halaman dimuat
+    window.onload = renderQuestion;
 </script>
 </body>
 </html>
