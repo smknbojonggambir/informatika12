@@ -1,111 +1,11 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ujian Informatika - Soal Per Soal</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        // Konfigurasi Tailwind untuk font Inter
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                },
-            }
-        }
-    </script>
-    <style>
-        /* Custom CSS untuk styling elemen form yang spesifik */
-        .option-radio input[type="radio"] {
-            display: none;
-        }
-        .option-radio span {
-            display: block;
-            padding: 12px 16px;
-            border-radius: 0.5rem;
-            border: 2px solid #e5e7eb;
-            cursor: pointer;
-            transition: all 0.2s;
-            background-color: #f9fafb;
-        }
-        .option-radio input[type="radio"]:checked + span {
-            background-color: #eef2ff; /* Indigo-50 */
-            border-color: #6366f1; /* Indigo-500 */
-            color: #1e40af; /* Indigo-800 */
-            font-weight: 600;
-        }
-        .option-radio span:hover {
-            background-color: #f3f4f6;
-        }
-        /* Simple animation for loading state */
-        .loading-spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: #6366f1; /* Indigo-500 */
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
-</head>
-<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4 font-sans">
-
-<div class="bg-white shadow-2xl rounded-xl max-w-xl w-full p-6 sm:p-8 space-y-6">
-    <div class="header text-center space-y-2">
-        <h2 class="text-3xl font-extrabold text-indigo-700">Ujian Informatika</h2>
-        <p class="text-gray-500">20 Soal Pilihan Ganda (Total 100 Poin)</p>
-        <div id="status" class="text-sm font-medium text-indigo-500">Siap Memulai.</div>
-        <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-sm" role="alert">
-            <span class="block sm:inline" id="error-text"></span>
-        </div>
-    </div>
-
-    <div class="question-area space-y-6" id="quiz-content">
-        </div>
-    
-    <div id="timer-message" class="text-center text-sm font-medium text-gray-600"></div>
-
-    <div class="navigation pt-4" id="quiz-navigation">
-        <button class="btn flex items-center justify-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white w-full py-3 px-4 rounded-lg font-bold transition duration-300 shadow-md hover:shadow-lg disabled:bg-indigo-400" id="next-btn" onclick="nextQuestion()">
-            <span>Mulai Ujian / Soal Berikutnya</span>
-        </button>
-    </div>
-</div>
-
 <script>
-    // ✅ URL SUDAH DIPERBARUI DENGAN URL AKTIF YANG ANDA KONFIRMASI
-    const GOOGLE_SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbxrKTuV2_ZO_hZ-Qo5__EQKwHKuzxASl7trQTG5-7W5uku7vCG-55nmzfrZc-5PzTAW/exec";
+    // ⚠️ GANTI DENGAN URL DARI DEPLOYMENT APPS SCRIPT BARU ANDA (Langkah 2)
+    const GITHUB_COMMIT_ENDPOINT = "https://script.google.com/macros/s/AKfycbz8vtIyu_Dobf95vnP323adhWWPnQDsGIzPvP5ShWVLpXlwPjTzzjau20SifGVMk_MU/exec"; 
     const JEDA_WAKTU = 0; // Detik
 
-    // --- DAFTAR 20 SOAL LENGKAP ---
-    const originalQuestions = [
-        { type: 'mc', text: 'Metode pengujian reliabilitas data dalam rangka memperoleh data yang valid merupakan fase untuk . . . .', options: [ 'meningkatkan akurasi data', 'mengurangi sampel penelitian', 'menjamin data bebas dari bias', 'membandingkan data dengan teori', 'menentukan konsistensi pengukuran' ], answer: 4, score: 5 },
-        { type: 'mc', text: 'Terkait potensi bias seleksi dalam analisis data, strategi yang tepat untuk memastikan sampel penelitian mewakili populasi adalah . . . .', options: [ 'memilih subjek secara acak', 'memilih subjek yang paling aktif secara sosial', 'menggunakan subjek yang paling mudah diakses', 'memilih subjek berdasarkan ketersediaan mereka', 'memfokuskan pada subjek dengan karakteristik yang paling ekstrem' ], answer: 0, score: 5 },
-        { type: 'mc', text: 'Ketika menggunakan bahasa pemrograman R, metode yang tepat untuk mendeteksi outliers dalam dataset adalah . . . .', options: [ 'mengabaikan semua data yang tidak sesuai dengan ekspektasi', 'menggunakan mean sebagai satu-satunya metode analisis', 'menggunakan interquartile range', 'mengumpulkan lebih banyak data', 'menganalisis variansi data' ], answer: 2, score: 5 },
-        { type: 'mc', text: 'Dalam proses validasi data, visualisasi data yang menggambarkan kondisi data terbaru perlu ditampilkan. Tujuannya adalah . . . .', options: [ 'hanya untuk estetika', 'untuk menggantikan semua metode statistika', 'untuk mengurangi jumlah data yang harus dianalisis', 'untuk memperlihatkan hubungan kompleks dalam data', 'sebagai satu-satunya metode analisis yang diperlukan' ], answer: 3, score: 5 },
-        { type: 'mc', text: 'Jika perusahaan komputer mengalami kegagalan dan kesalahan dalam memprediksi persentase kenaikan penjualan berdasarkan data hasil penelitian kuantitatif yang dilakukan, maka dampak yang mungkin muncul adalah . . . .', options: [ 'tidak berpengaruh sama sekali', 'meningkatkan reliabilitas temuan', 'mempercepat proses analisis data', 'hanya memengaruhi analisis deskriptif', 'menyebabkan estimasi yang bias dan tidak akurat' ], answer: 4, score: 5 },
-        { type: 'mc', text: 'Dibandingkan dengan metode manual, sistem pengolahan data berbasis elektronik memiliki beberapa keunggulan antara lain . . . .', options: [ 'lebih lambat', 'lebih ekonomis', 'lebih mudah membuat kesalahan', 'tingkat akurasi dan efisiensi tinggi', 'membutuhkan lebih banyak tenaga kerja' ], answer: 3, score: 5 },
-        { type: 'mc', text: 'Dalam tahapan pengolahan data mining, dikenal istilah fase pattern analysis. Tujuan penerapan fase pattern analysis adalah . . . .', options: [ 'mempercepat proses analisis data', 'membersihkan data yang tidak lengkap', 'mengurangi jumlah data yang dianalisis', 'menemukan pola hubungan antardata', 'mengintegrasikan data dari sumber yang berbeda' ], answer: 3, score: 5 },
-        { type: 'mc', text: 'Dalam pengolahan data, sangat penting bagi seorang administrator data untuk menerapkan proses reduksi data. Pernyataan berikut yang menjelaskan fungsi proses tersebut adalah . . . .', options: [ 'menambahkan lebih banyak variabel ke analisis', 'menggabungkan semua dataset menjadi satu', 'meningkatkan jumlah data yang tersedia', 'meningkatkan kualitas data untuk analisis', 'membuat laporan akhir.' ], answer: 3, score: 5 },
-        { type: 'mc', text: 'Pernyataan berikut yang merepresentasikan tujuan utama dari data cleaning dalam data preprocessing adalah . . . .', options: [ 'mengurangi volume data', 'meningkatkan kecepatan analisis data', 'mengurangi kebutuhan akan data mining', 'membuat data menjadi lebih menarik', 'meningkatkan akurasi, kelengkapan, konsistensi, dan kepercayaan data.' ], answer: 4, score: 5 },
-        { type: 'mc', text: 'Salah satu teknik data cleaning adalah dengan menangani nilai yang hilang atau kosong (null). Salah satu teknik yang tepat untuk mendukung proses tersebut adalah . . . .', options: [ 'menghapus baris data', 'menggunakan nilai modus', 'menggunakan nilai median', 'menggunakan nilai rata-rata', 'menggunakan model regresi non-linear kompleks' ], answer: 3, score: 5 },
-        { type: 'mc', text: 'Saat menjalankan compiler Java dengan perintah command prompt, muncul pesan bahwa Java tidak dikenal. Padahal, proses instalasi telah berhasil dilakukan. Tindakan yang harus dilakukan untuk mengatasi permasalahan tersebut adalah....', options: [ 'menginstal ulang JDK', 'men-disable antivirus di Windows', 'menginstal web server di Windows', 'memperbaiki path environment', 'menginstal Java di Windows' ], answer: 3, score: 5 },
-        { type: 'mc', text: 'Perhatikan kode program berikut: public class Klinik { public static void main(String[] args) { System.out.println("RS. Indriyana"); } } Bagian program utama yang akan dieksekusi ketika program dijalankan adalah....', options: [ 'package Klinik;', 'public class Klinik;', 'public static void main(String[] args)', 'System.out.println("RS. Indriyana")', '}' ], answer: 2, score: 5 },
-        { type: 'mc', text: 'Perhatikan kode program berikut: class Kapal { public static void main(String[] args) { } } Program dapat dikompilasi, tetapi program sukses dieksekusi tanpa error karena tidak terdapat method main. Kesimpulan yang paling tepat adalah....', options: [ 'Program dapat dikompilasi, tetapi program sukses dieksekusi tanpa error dan dapat dieksekusi karena tidak terdapat method main.', 'kelas dapat diinstansiasi', 'program sukses dikompilasi tanpa error dan dapat dieksekusi', 'Program dapat dikompilasi, tetapi program tidak dapat dieksekusi karena tidak ada method main', 'Program Java tidak berhasil dikompilasi, tetapi dapat dijalankan' ], answer: 2, score: 5 },
-        { type: 'mc', text: 'Perhatikan kode program berikut: public class Contoh { static int users = 0; public void CekSign() { users += 1; System.out.println("users: " + users); } } Nomor baris program yang akan menyebabkan error ketika dikompilasi adalah....', options: [ 'baris ke-1', 'baris ke-2', 'baris ke-3', 'baris ke-4', 'baris ke-5' ], answer: 2, score: 5 },
-        { type: 'mc', text: 'Operator penugasan yang digunakan untuk membandingkan apakah dua data memiliki nilai yang sama adalah....', options: [ '<', '!=', '>', '==', '!' ], answer: 3, score: 5 },
-        { type: 'mc', text: 'Perhatikan kode program berikut: double x = 7; double y = 5; System.out.println("Apakah x <= y): " + (x <= y)); System.out.println("Apakah x >= y): " + (x >= y)); Program tersebut menerapkan operasi kondisional. Hasil kompilasi dari program tersebut adalah....', options: [ 'true', 'false', 'true, false', 'false, true', 'true, true' ], answer: 3, score: 5 },
-        { type: 'mc', text: 'Struktur perulangan yang akan melakukan kondisi tidak terlebih dahulu adalah....', options: [ 'for', 'while', 'for-do', 'do while', 'case of' ], answer: 3, score: 5 },
-        { type: 'mc', text: 'Perhatikan tahapan pengembangan aplikasi berikut: (1) Identifikasi masalah (2) Implementasi dan update (3) Mendesain sistem (4) Compile dan testing (5) Training dan sosialisasi (6) Menulis kode program. Urutan tahapan pengembangan aplikasi yang tepat adalah....', options: [ '(1) - (3) - (2) - (6) - (4) - (5)', '(1) - (3) - (6) - (2) - (5) - (4)', '(1) - (3) - (6) - (4) - (2) - (5)', '(1) - (3) - (6) - (4) - (5) - (2)', '(3) - (1) - (5) - (2) - (4) - (6)' ], answer: 3, score: 5 },
-        { type: 'mc', text: 'Setelah program dirilis ke pengguna, akan dilakukan pemantauan penggunaan program selama beberapa waktu. Hal ini dilakukan untuk melihat adanya bug atau kesalahan dalam aplikasi. Aktivitas ini dilakukan pada tahap....', options: [ 'Mendesain sistem', 'Compile dan testing', 'Identifikasi masalah', 'Training dan update sistem', 'Implementasi dan update sistem' ], answer: 4, score: 5 },
-        { type: 'mc', text: 'Dalam konteks penelitian kuantitatif, peran utama dari "validitas eksternal" dalam generalisasi data adalah untuk . . . .', options: [ 'memastikan akurasi hasil pengukuran instrumen penelitian', 'mengukur seberapa jauh hasil penelitian dapat diaplikasikan ke populasi yang lebih luas', 'menentukan konsistensi hasil penelitian jika diulang di waktu yang berbeda', 'memperkuat hubungan sebab-akibat antara variabel yang diteliti', 'membuktikan bahwa instrumen penelitian bebas dari kesalahan sistematis' ], answer: 1, score: 5 }
-    ];
+    // --- DAFTAR 20 SOAL LENGKAP --- (TETAP SAMA)
+    const originalQuestions = [ /* ... */ ];
     // --- AKHIR DAFTAR 20 SOAL LENGKAP ---
 
     let questions = [...originalQuestions]; 
@@ -113,241 +13,7 @@
     let studentData = { name: '', class: '', answers: [], totalScore: 0, maxScore: 0 };
     let timerInterval;
 
-    /**
-     * Fungsi utility untuk mengacak array (Fisher-Yates shuffle).
-     * @param {Array} array 
-     */
-    function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-    }
-
-    // 1. Acak urutan soal di awal
-    shuffleArray(questions);
-
-
-    function setErrorMessage(message) {
-        const errorDiv = document.getElementById('error-message');
-        const errorText = document.getElementById('error-text');
-        
-        if (message) {
-            errorText.textContent = message;
-            errorDiv.classList.remove('hidden');
-        } else {
-            errorDiv.classList.add('hidden');
-            errorText.textContent = '';
-        }
-    }
-
-    function startTimer() {
-        let timeLeft = JEDA_WAKTU;
-        const timerMsg = document.getElementById('timer-message');
-        const nextBtn = document.getElementById('next-btn');
-        const nextBtnText = nextBtn.querySelector('span');
-        
-        // Nonaktifkan tombol dan tampilkan pesan tunggu
-        nextBtn.disabled = true;
-        nextBtnText.textContent = `Tunggu ${timeLeft} detik...`;
-        timerMsg.textContent = `⏳ Soal berikutnya akan terbuka dalam ${timeLeft} detik...`;
-
-        clearInterval(timerInterval); // Bersihkan interval lama jika ada
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            if (timeLeft > 0) {
-                nextBtnText.textContent = `Tunggu ${timeLeft} detik...`;
-                timerMsg.textContent = `⏳ Soal berikutnya akan terbuka dalam ${timeLeft} detik...`;
-            } else {
-                clearInterval(timerInterval);
-                timerMsg.textContent = 'Silakan jawab dan lanjut!';
-                nextBtn.disabled = false;
-                nextBtnText.textContent = (currentQuestionIndex === questions.length - 1) ? 'Kirim Jawaban' : 'Soal Berikutnya';
-            }
-        }, 1000);
-    }
-
-    function renderQuestion() {
-        setErrorMessage('');
-        const contentArea = document.getElementById('quiz-content');
-        const status = document.getElementById('status');
-        const nextBtn = document.getElementById('next-btn');
-        const nextBtnText = nextBtn.querySelector('span');
-        document.getElementById('timer-message').textContent = '';
-
-        // Tampilan Awal: Input Data Diri
-        if (currentQuestionIndex < 0) {
-            contentArea.innerHTML = `
-                <div class="space-y-4">
-                    <h3 class="text-xl font-semibold text-gray-700 border-b pb-2">Data Diri Peserta</h3>
-                    <label class="block text-sm font-medium text-gray-700">Nama Lengkap:</label>
-                    <input type="text" id="student-name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" placeholder="Masukkan Nama Lengkap Anda" value="${studentData.name}">
-                    
-                    <label class="block text-sm font-medium text-gray-700">Kelas:</label>
-                    <select id="student-class" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
-                        <option value="">-- Pilih Kelas --</option>
-                        <option value="X DKV 1">X DKV 1</option>
-                        <option value="X DKV 2">X DKV 2</option>
-                        <option value="X APHP">X APHP</option>
-                    </select>
-                </div>
-            `;
-            // Set class value if previously selected
-            if (studentData.class) {
-                document.getElementById('student-class').value = studentData.class;
-            }
-
-            nextBtnText.textContent = 'Mulai Ujian';
-            nextBtn.disabled = false;
-            status.textContent = 'Mohon isi data diri untuk memulai.';
-            return;
-        }
-
-        // Tampilan Soal
-        if (currentQuestionIndex < questions.length) {
-            const q = questions[currentQuestionIndex];
-            status.textContent = `Soal ${currentQuestionIndex + 1} dari ${questions.length}`;
-            
-            let htmlContent = `
-                <div class="p-4 bg-indigo-50 rounded-lg shadow-inner">
-                    <h4 class="text-lg font-semibold text-gray-800">${currentQuestionIndex + 1}. ${q.text}</h4>
-                    <p class="text-sm text-indigo-600 mt-1">${q.score} Poin</p>
-                </div>
-                <div class="options space-y-3 mt-4">`;
-
-            // Cari jawaban siswa yang sudah ada untuk soal ini
-            const existingAnswer = studentData.answers.find(a => a.q_index === currentQuestionIndex);
-            const studentAnswerOriginalIndex = existingAnswer ? existingAnswer.student_answer : null;
-
-            // 1. Siapkan opsi dengan indeks asli
-            const optionsWithIndex = q.options.map((text, index) => ({
-                text: text,
-                originalIndex: index
-            }));
-
-            // 2. Acak opsi untuk tampilan
-            shuffleArray(optionsWithIndex);
-            
-            // 3. Render opsi
-            optionsWithIndex.forEach((optData, i) => {
-                const labelId = `q${currentQuestionIndex}-opt${i}`;
-                const letter = String.fromCharCode(65 + i); // Display letters A, B, C...
-
-                // Nilai radio button adalah index ASLI opsi tersebut di array 'options'
-                const valueToStore = optData.originalIndex;
-                
-                // Cek apakah opsi yang sedang dirender adalah opsi yang sebelumnya dipilih siswa
-                const isChecked = studentAnswerOriginalIndex !== null && studentAnswerOriginalIndex === valueToStore;
-                
-                htmlContent += `
-                    <label for="${labelId}" class="option-radio block">
-                        <input type="radio" name="q${currentQuestionIndex}" id="${labelId}" value="${valueToStore}" ${isChecked ? 'checked' : ''}>
-                        <span><span class="font-mono text-indigo-700 mr-2">${letter}.</span> ${optData.text}</span>
-                    </label>
-                `;
-            });
-            
-            htmlContent += '</div>';
-            contentArea.innerHTML = htmlContent;
-            
-            nextBtnText.textContent = (currentQuestionIndex === questions.length - 1) ? 'Kirim Jawaban' : 'Soal Berikutnya';
-
-            // Mulai timer setelah soal pertama
-            if (currentQuestionIndex > 0 && JEDA_WAKTU > 0) {
-                startTimer();
-            } else {
-                // Soal pertama tidak perlu timer
-                nextBtn.disabled = false;
-                document.getElementById('timer-message').textContent = 'Selamat Mengerjakan!';
-            }
-        } else {
-            finishQuiz();
-        }
-    }
-
-    function checkAnswer() {
-        const q = questions[currentQuestionIndex];
-        let studentAnswer = null; // Ini akan menyimpan ORIGINAL INDEX opsi PG
-        let answered = false;
-        
-        // Cek Jawaban PG
-        if (q.type === 'mc') {
-            const selected = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
-            if (selected) {
-                // Nilai yang diambil adalah ORIGINAL INDEX dari opsi yang dipilih
-                studentAnswer = parseInt(selected.value);
-                answered = true;
-            }
-        } 
-        
-        return { answered, studentAnswer };
-    }
-
-    function nextQuestion() {
-        clearInterval(timerInterval); // Hentikan timer saat tombol diklik
-
-        // Langkah 1: Input Data Diri
-        if (currentQuestionIndex === -1) {
-            const nameInput = document.getElementById('student-name').value.trim();
-            const classSelect = document.getElementById('student-class').value;
-            if (nameInput === '' || classSelect === '') {
-                setErrorMessage('⚠️ Harap isi Nama Lengkap dan pilih Kelas terlebih dahulu.');
-                return;
-            }
-            studentData.name = nameInput;
-            studentData.class = classSelect;
-            
-            // Hitung Score_Max total
-            studentData.maxScore = questions.reduce((sum, q) => sum + q.score, 0);
-            
-            currentQuestionIndex++;
-            renderQuestion();
-            return;
-        }
-
-        // Langkah 2: Menjawab Soal (untuk soal >= 0)
-        const { answered, studentAnswer } = checkAnswer();
-        
-        if (answered) {
-            const q = questions[currentQuestionIndex];
-
-            // Hapus dan Hitung Ulang Skor (agar tidak double count saat navigasi)
-            let existingScore = 0;
-            const existingAnswerIndex = studentData.answers.findIndex(a => a.q_index === currentQuestionIndex);
-
-            if (existingAnswerIndex !== -1) {
-                existingScore = studentData.answers[existingAnswerIndex].score_earned;
-                studentData.answers.splice(existingAnswerIndex, 1); // Hapus jawaban lama
-            }
-            
-            // Update totalScore dengan menghapus skor lama
-            studentData.totalScore -= existingScore;
-
-            // Hitung skor baru: studentAnswer adalah index ASLI opsi yang dipilih
-            let newScoreEarned = 0;
-            if (studentAnswer === q.answer) {
-                newScoreEarned = q.score;
-            } 
-            
-            // Tambahkan jawaban baru
-            studentData.answers.push({
-                q_index: currentQuestionIndex, // Index soal di array yang sudah diacak
-                q_type: q.type,
-                student_answer: studentAnswer, // Original Index (PG)
-                score_earned: newScoreEarned
-            });
-            
-            // Update totalScore dengan skor baru
-            studentData.totalScore += newScoreEarned;
-
-
-            // Lanjut ke soal berikutnya atau selesai
-            currentQuestionIndex++;
-            renderQuestion();
-        } else {
-            setErrorMessage('⚠️ Harap jawab soal sebelum lanjut ke pertanyaan berikutnya.');
-        }
-    }
+    // ... (Fungsi shuffleArray, setErrorMessage, startTimer, renderQuestion, checkAnswer, nextQuestion tetap sama) ...
 
     function finishQuiz() {
         const contentArea = document.getElementById('quiz-content');
@@ -367,74 +33,77 @@
         `;
         navigation.style.display = 'none';
         status.textContent = 'Selesai';
-        sendToGoogleSheet();
+        // 🚨 Panggil fungsi pengiriman ke GitHub
+        sendToGitHub(); 
     }
 
-    // 🔗 Kirim data ke Google Sheet (SUDAH DIPERBAIKI DAN DILENGKAPI)
-    async function sendToGoogleSheet() {
+    // 🔗 FUNGSI BARU: Kirim data ke GitHub melalui Apps Script Proxy
+    async function sendToGitHub() {
         const submissionStatus = document.getElementById('submission-status');
-        submissionStatus.innerHTML = '<div class="flex items-center justify-center space-x-2"><div class="loading-spinner"></div><span>Sedang mengirim data...</span></div>';
+        submissionStatus.innerHTML = '<div class="flex items-center justify-center space-x-2"><div class="loading-spinner"></div><span>Sedang mengirim data ke GitHub...</span></div>';
 
+        // 📝 Format data sesuai kebutuhan rekap (dipisahkan TAB \t)
+        // Raw_Answers di-stringy-kan dan di-escape untuk aman
+        const rawAnswersEscaped = JSON.stringify(studentData.answers).replace(/"/g, '""');
+        
+        // Buat satu baris data (record)
+        const record = [
+            new Date().toLocaleString("id-ID"),
+            studentData.name.replace(/\t|\n|\r/g, ' '), // Bersihkan dari karakter control
+            studentData.class.replace(/\t|\n|\r/g, ' '), 
+            studentData.totalScore,
+            studentData.maxScore,
+            rawAnswersEscaped 
+        ].join('\t') + '\n'; // Gunakan TAB (\t) sebagai delimiter, tambah newline (\n)
+
+        // Payload yang dikirim ke Apps Script
         const payload = {
-            timestamp: new Date().toLocaleString("id-ID"),
-            Nama_Lengkap: studentData.name,
+            // Ini adalah baris data yang akan ditambahkan ke file di GitHub
+            content: record, 
+            // Kirim juga metadata siswa untuk pesan commit
+            Nama_Lengkap: studentData.name, 
             Kelas: studentData.class,
-            Score_PG: studentData.totalScore,
-            Score_Max: studentData.maxScore,
-            Raw_Answers: JSON.stringify(studentData.answers)
+            Score_PG: studentData.totalScore
         };
         
         try {
-            // Implementasi Exponential Backoff untuk menangani throttling
             const maxRetries = 3;
             
             for (let i = 0; i < maxRetries; i++) {
                 try {
-                    const response = await fetch(GOOGLE_SHEET_ENDPOINT, {
+                    const response = await fetch(GITHUB_COMMIT_ENDPOINT, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" }, 
                         body: JSON.stringify(payload) 
                     });
                     
-                    // Cek apakah status respons menunjukkan kegagalan HTTP (misal: 4xx, 5xx)
                     if (!response.ok) {
-                        // Jika respons bukan 200 OK, langsung lempar error untuk retry
                         throw new Error(`HTTP Error Status: ${response.status} (${response.statusText})`);
                     }
 
-                    // Hanya parse JSON jika respons OK
                     const result = await response.json();
 
                     if (result.result === 'success') {
-                        submissionStatus.innerHTML = '<span class="text-green-600 font-bold">✅ Data berhasil terkirim!</span>';
-                        return; // Sukses, keluar dari loop retry
+                        submissionStatus.innerHTML = `<span class="text-green-600 font-bold">✅ Data berhasil terkirim dan tersimpan di GitHub (${FILE_PATH})!</span>`;
+                        return; // Sukses
                     } else {
-                        // Error dari Apps Script (catch di doPost, bukan HTTP error)
                         throw new Error(`Apps Script Error: ${result.message}`);
                     }
                 } catch (error) {
                     if (i < maxRetries - 1) {
                         const delay = Math.pow(2, i) * 1000;
-                        // console.error(`Attempt ${i + 1} failed. Retrying in ${delay / 1000}s. Error: ${error.message}`);
-                        submissionStatus.innerHTML = `<span class="text-yellow-600">Gagal kirim. Mencoba lagi dalam ${delay / 1000} detik... (${i + 1}/${maxRetries})</span>`;
+                        submissionStatus.innerHTML = `<span class="text-yellow-600">Gagal kirim ke GitHub. Mencoba lagi dalam ${delay / 1000} detik... (${i + 1}/${maxRetries})</span>`;
                         await new Promise(resolve => setTimeout(resolve, delay));
                     } else {
-                        // Gagal setelah semua retry
                         throw error;
                     }
                 }
             }
         } catch (error) {
             console.error("Final Submission Error:", error);
-            // Menampilkan pesan error yang lebih jelas ke pengguna
             let detailMessage = error.message;
-            if (error.message.includes('Failed to fetch')) {
-                 detailMessage = "Gagal terhubung ke server. Mungkin masalah CORS atau Firewall jaringan.";
-            } else if (error.message.includes('Apps Script Error: Gagal membuka Spreadsheet')) {
-                 detailMessage = "Gagal membuka Sheet di Apps Script. Periksa ID Spreadsheet Anda.";
-            }
 
-            submissionStatus.innerHTML = `<span class="text-red-600 font-bold">❌ Data GAGAL Terkirim.</span><br><span class="text-sm text-red-500">Detail: ${detailMessage}</span>`;
+            submissionStatus.innerHTML = `<span class="text-red-600 font-bold">❌ Data GAGAL Terkirim ke GitHub.</span><br><span class="text-sm text-red-500">Detail: ${detailMessage}</span>`;
         }
     }
 
