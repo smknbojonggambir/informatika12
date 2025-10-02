@@ -2,7 +2,8 @@
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *"); 
 header("Access-Control-Allow-Methods: POST"); 
-error_reporting(0); // jangan tampilkan warning/notice HTML
+ini_set('display_errors', 0);
+error_reporting(0);
 
 $host = "brmklltefai8500pw9va-mysql.services.clever-cloud.com";
 $user = "u5dhutcyrle9lxrj";
@@ -44,3 +45,4 @@ if ($conn->query($sql) === TRUE) {
 }
 
 $conn->close();
+?>
