@@ -84,8 +84,8 @@
 </div>
 
 <script>
-    // 🔗 Ganti dengan URL Web App kamu (yang /exec)
-    const GOOGLE_SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzmOnRR7cHLF34Vurrl350U-yg37XjDql9anUNQUaWFesDm2b0kT4y5LYkfm_lpsIVg2w/exec";
+    // ⚠️ PERHATIAN: GANTI INI DENGAN URL GOOGLE APPS SCRIPT WEB APP ANDA
+    const GOOGLE_SHEET_ENDPOINT = "https://script.google.com/macros/s/[PASTIKAN_ANDA_GANTI_INI_DENGAN_URL_ANDA]/exec"; 
     const JEDA_WAKTU = 10; // Detik
 
     // --- DAFTAR 20 SOAL LENGKAP (19 MC, 1 ESAI) ---
@@ -349,7 +349,7 @@
 
     let questions = [...originalQuestions]; // Buat salinan yang akan diacak
     let currentQuestionIndex = -1;
-    let studentData = { name: '', class: '', answers: [], totalScore: 0, passingScore: 0 };
+    let studentData = { name: '', class: '', answers: [], totalScore: 0, maxScorePG: 0, passingScore: 0 };
     let timerInterval;
 
     /**
@@ -425,9 +425,9 @@
                     <label class="block text-sm font-medium text-gray-700">Kelas:</label>
                     <select id="student-class" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
                         <option value="">-- Pilih Kelas --</option>
-                        <option value="X DKV 1">X DKV 1</option>
-                        <option value="X DKV 2">X DKV 2</option>
-                        <option value="X APHP">X APHP</option>
+                        <option value="X DKV 1">X DKV 1">X DKV 1</option>
+                        <option value="X DKV 2">X DKV 2">X DKV 2</option>
+                        <option value="X APHP">X APHP">X APHP</option>
                     </select>
                 </div>
             `;
@@ -556,6 +556,7 @@
             
             // Hitung Score_Max total (hanya sekali)
             studentData.passingScore = questions.reduce((sum, q) => sum + q.score, 0);
+            studentData.maxScorePG = questions.filter(q => q.type === 'mc').reduce((sum, q) => sum + q.score, 0);
             
             currentQuestionIndex++;
             renderQuestion();
@@ -611,17 +612,15 @@
         const navigation = document.getElementById('quiz-navigation');
         const status = document.getElementById('status');
         
-        // Hitung skor maksimal PG saja
-        const maxScorePG = questions.filter(q => q.type === 'mc').reduce((sum, q) => sum + q.score, 0);
-
+        // Perbaikan di sini: Menampilkan skor PG per total skor Ujian (105)
         contentArea.innerHTML = `
             <div class="text-center p-8 bg-green-50 rounded-lg border border-green-200">
                 <h3 class="text-2xl font-bold text-green-700 mb-2">Ujian Selesai 🎉</h3>
                 <p class="text-gray-600">Terima kasih, <b>${studentData.name}</b> (${studentData.class}).</p>
                 <p class="mt-4 text-lg font-semibold text-gray-800">
-                    Skor Pilihan Ganda Otomatis: <b>${studentData.totalScore}</b> / <b>${maxScorePG}</b>
+                    Skor Pilihan Ganda Otomatis: <b>${studentData.totalScore}</b> / <b>${studentData.passingScore}</b>
                 </p>
-                <p class="text-sm text-red-600 font-medium">Nilai Akhir (total skor maksimal: ${studentData.passingScore}) akan tersedia setelah koreksi Esai manual.</p>
+                <p class="text-sm text-red-600 font-medium">Skor ini hanya mencakup nilai PG. Nilai Akhir (total skor maksimal: ${studentData.passingScore}) akan tersedia setelah koreksi Esai manual.</p>
                 <div id="submission-status" class="mt-4 text-indigo-500 font-medium">Sedang mengirim data...</div>
             </div>
         `;
@@ -659,6 +658,8 @@
 
                     if (response.ok) {
                         break; // Sukses, keluar dari loop
+                    } else {
+                        throw new Error(`HTTP Error: ${response.status}`);
                     }
 
                 } catch (error) {
@@ -686,12 +687,15 @@
             
         } catch (err) {
             submissionStatus.className = "mt-4 text-red-600 font-bold";
-            submissionStatus.textContent = "Data GAGAL Terkirim. Ada masalah koneksi/endpoint.";
+            submissionStatus.textContent = "Data GAGAL Terkirim. Ada masalah koneksi/endpoint. Pastikan URL Google Apps Script Anda benar dan sudah di-deploy dengan izin 'Anyone'.";
             console.error("❌ Error saat Fetch:", err);
         }
     }
 
     // Inisiasi
+    // Inisiasi di sini agar studentData.passingScore dan maxScorePG terhitung di awal
+    studentData.passingScore = originalQuestions.reduce((sum, q) => sum + q.score, 0);
+    studentData.maxScorePG = originalQuestions.filter(q => q.type === 'mc').reduce((sum, q) => sum + q.score, 0);
     renderQuestion();
 </script>
 </body>
